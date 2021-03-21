@@ -2,15 +2,21 @@
  *  Create module for load and write config for "the Node"
  *  
  *  Created Mar 13, 2021 by Jirachai Thiemsert (Cray)
- *  - Verify config file existing
+ *  1) Verify config file existing
  *  - If no, create a new config file
  *  - If yes, load config file
+ *  
+ *  2) Open Wifi mode
+ *  - AP mode = to communicate to "the App".
+ *  - STA mode = to communicate to "the Cloud Database".
  */
 
 
 #include <ArduinoJson.h>
 #include "FS.h"
 #include <LittleFS.h> // Reference: https://arduino-esp8266.readthedocs.io/en/latest/filesystem.html
+
+#include <ESP8266WiFi.h>
 
 // Config Firebase
 #define FIREBASE_HOST "asset-management-lff.firebaseio.com"
@@ -35,6 +41,24 @@
 #define OFFLINE_MODE "offline mode"
 
 #define DEFAULT_INTERVAL 10 // Default repeat read sensor in 10 seconds
+
+#define THE_NODE_SSID "theNode_DHT"
+#define THE_NODE_PASSWORD "theP455w0rd"
+
+IPAddress ap_local_ip = {192,168,1,144};   // Set up "the Node"'s AP mode IP
+IPAddress gateway={192,168,1,1};      // Set up "the Node"'s AP mode Gateway
+IPAddress subnet={255,255,255,0};     // Set up "the Node"'s AP mode Subnet
+
+String g_firebaseHost = "";
+String g_firebaseAuth = "";
+String g_wifiSSID = "";
+String g_wifiPassword = "";
+String g_workingMode = "";
+
+String g_macAddress = "";
+
+// ******************
+WiFiServer wifiServer(80);
 
 bool loadConfig() {
   File configFile = LittleFS.open("/config.json", "r");
@@ -96,6 +120,27 @@ bool loadConfig() {
 
   Serial.print("Loaded testUnknown: ");
   Serial.println(testUnknown);
+
+  Serial.println("------------------");
+  // Load config values to global variables
+  g_firebaseHost = firebaseHost;
+  g_firebaseAuth = firebaseAuth;
+  g_wifiSSID = wifiSSID;
+  g_wifiPassword = wifiPassword;
+  g_workingMode = workingMode;
+
+  Serial.print("Loaded g_firebaseHost: ");
+  Serial.println(g_firebaseHost);
+  Serial.print("Loaded g_firebaseAuth: ");
+  Serial.println(g_firebaseAuth);
+  Serial.print("Loaded g_wifiSSID: ");
+  Serial.println(g_wifiSSID);
+  Serial.print("Loaded g_wifiPassword: ");
+  Serial.println(g_wifiPassword);
+  Serial.print("Loaded g_workingMode: ");
+  Serial.println(g_workingMode);
+  
+  
   return true;
 }
 
@@ -125,7 +170,117 @@ bool saveDefaultConfig() {
   return true;
 }
 
+bool turnOnWifi() {
+  if(g_wifiSSID == "") {
+    // Turn on AP mode only, to talk with "the App" in installation process.
+    Serial.println("Turn on AP mode only, to prepare installation process.");
+    WiFi.mode(WIFI_AP);
+//    WiFi.mode(WIFI_AP_STA);
 
+    WiFi.softAP(THE_NODE_SSID, THE_NODE_PASSWORD); // Set Soft SSID
+    WiFi.softAPConfig(ap_local_ip,gateway,subnet); // Set up to module  
+
+    Serial.println(""); 
+    Serial.println("WiFi connected");     // Display connected success
+    Serial.println("AP IP address: "); 
+    Serial.println(WiFi.softAPIP());       // Show ESP8266's IP Addres
+
+    g_macAddress = WiFi.softAPmacAddress().c_str();
+    Serial.printf("MAC address String = %s\n", WiFi.softAPmacAddress().c_str());
+    Serial.print("g_macAddress: ");
+    Serial.println(g_macAddress);
+
+    if(!runWebServer()) {
+      Serial.println("Failed to run web server.");
+    } else {
+      Serial.println("Run web server is successfully.");
+    }
+    
+    
+  } else {
+    Serial.println("Turn on STA mode only, to prepare internet access process.");
+//    WiFi.mode(WIFI_AP_STA);
+    WiFi.mode(WIFI_STA);
+
+    // connect to wifi.
+    WiFi.begin(g_wifiSSID, g_wifiPassword);
+    Serial.print("connecting");
+    
+    while (WiFi.status() != WL_CONNECTED) {
+      Serial.print(".");
+      delay(500);
+    }
+    Serial.println();
+    Serial.print("STA connected: ");
+    Serial.println(WiFi.localIP());
+  }
+
+  /*
+   * Wifi Connection status:
+   * 0 : WL_IDLE_STATUS when Wi-Fi is in process of changing between statuses
+   * 1 : WL_NO_SSID_AVAILin case configured SSID cannot be reached
+   * 3 : WL_CONNECTED after successful connection is established
+   * 4 : WL_CONNECT_FAILED if connection failed
+   * 6 : WL_CONNECT_WRONG_PASSWORD if password is incorrect
+   * 7 : WL_DISCONNECTED if module is not configured in station mode
+   */
+  
+  Serial.printf("Connection status: %d\n", WiFi.status());
+  
+  return true;
+}
+
+bool runWebServer() {
+  wifiServer.begin();
+  
+  return true;
+}
+
+void webButtonsCommand() {
+  // put your main code here, to run repeatedly:
+  WiFiClient client = wifiServer.available();
+  String command = "";
+
+  if (client) {
+
+    while (client.connected()) {
+
+      while (client.available()>0) {
+        char c = client.read();
+        if (c == '\n') {
+          break;
+        }
+        command += c;
+        Serial.write(c);
+      }
+      
+      if (command == "POWER") {
+        
+        Serial.println("We got the power !!");
+      }else if (command == "TEMPUP") {
+        
+        Serial.println("We got the power !!");
+      }else if (command == "TEMPDOWN") {
+        
+        Serial.println("We got the power !!");
+      }else if (command == "FAN") {
+        
+        Serial.println("We got the power !!");
+      }else if (command == "MODE") {
+
+        Serial.println("We got the power !!");
+      }
+
+      command = "";
+      delay(10);
+    }
+
+    client.stop();
+    Serial.println("Client disconnected");
+  }
+}
+
+// ==================================================================
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -172,15 +327,26 @@ void setup() {
         Serial.println("Failed to load new config");
       } else {
         Serial.println("New Config loaded");
+
+        if(!turnOnWifi()) {
+          Serial.println("Failed to turn on Wifi");
+        } else {
+          Serial.println("Wifi turn on"); 
+        }
       }
     }
   } else {
     Serial.println("Config loaded");
+
+    if(!turnOnWifi()) {
+      Serial.println("Failed to turn on Wifi");
+    } else {
+      Serial.println("Wifi turn on"); 
+    }
   }
-  
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  webButtonsCommand();
 }
