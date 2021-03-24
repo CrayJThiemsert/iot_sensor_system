@@ -1,45 +1,36 @@
-import 'package:flare_splash_screen/flare_splash_screen.dart';
+import 'package:rive_splash_screen/rive_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:ftiotsystem/utils/constants.dart';
 
-import 'pages/home/home.dart';
-
-void main() => runApp(
-  Constants(
-    child: MyApp(),
-  ),
-);
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: SplashScreen.navigate(
-        name: 'intro.flr',
-        // next: (context) => MainHomePage(title: 'Flutter Demo Home Page'),
-        next: (context) => HomePage(),
+        name: 'intro.riv',
+        next: (context) => MyHomePage(title: 'Flutter Demo Home Page'),
         until: () => Future.delayed(Duration(seconds: 5)),
-        startAnimation: '1',
+        startAnimation: 'snowman',
       ),
     );
   }
 }
 
-class MainHomePage extends StatefulWidget {
-  MainHomePage({Key key, this.title}) : super(key: key);
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
-  _MainHomePageState createState() => _MainHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MainHomePageState extends State<MainHomePage> {
+class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
