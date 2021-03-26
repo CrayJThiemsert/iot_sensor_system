@@ -14,9 +14,17 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WebServer.h>
 #include <EEPROM.h>
+#include <DHT.h>
+#include<FirebaseArduino.h>
 
 #define THE_NODE_SSID "theNode_DHT"
 #define THE_NODE_PASSWORD ""
+
+// Working Mode(mode) [20 characters]
+#define POLLING_MODE "polling mode" 
+#define REQUEST_MODE "request mode" 
+#define BURST_MODE "burst mode" // Default, use after installation process finished
+#define OFFLINE_MODE "offline mode"
 
 IPAddress ap_local_ip = {192,168,1,199};   // Set up "the Node"'s AP mode IP
 IPAddress gateway={192,168,1,1};      // Set up "the Node"'s AP mode Gateway
@@ -30,11 +38,16 @@ const char* passphrase = "text";
 String st;
 String content;
 
+String gFirebaseHost = "";
+String gFirebaseAuth = "";
+String gWorkingMode = BURST_MODE;
 
 //Function Decalration
 bool testWifi(void);
 void launchWeb(void);
 void setupAP(void);
+bool readSensor(void);
+bool updateCloud(void);
 
 //Establishing Local server at port 80 whenever required
 ESP8266WebServer server(80);
@@ -81,6 +94,7 @@ void setup()
   }
   Serial.print("FBHOST: ");
   Serial.println(efbhost);
+  gFirebaseHost = efbhost;
 
   String efbauth = "";
   for (int i = 160; i < 224; ++i)
@@ -89,6 +103,16 @@ void setup()
   }
   Serial.print("FBAUTH: ");
   Serial.println(efbauth);
+  gFirebaseAuth = efbauth;
+
+  String emode = "";
+  for (int i = 224; i < 244; ++i)
+  {
+    emode += char(EEPROM.read(i));
+  }
+  Serial.print("MODE: ");
+  Serial.println(emode);
+  gWorkingMode = emode;
 
   // Try to connect wifi by loaded ssid and password values from eeprom
   WiFi.begin(esid.c_str(), epass.c_str());
@@ -129,11 +153,17 @@ void loop() {
       delay(1000);
     }
 
+    if(updateCloud()) {
+      Serial.println("Succesfully Update data to the Cloud!!!");
+    } else {
+      Serial.println("Update data to the Cloud Failured!!!");
+    }
+    
   }
   else
   {
   }
-
+  
 }
 
 
@@ -257,11 +287,14 @@ void createWebServer()
 
       String qfbhost = server.arg("fbhost");
       String qfbauth = server.arg("fbauth");
+
+      String qmode = server.arg("mode");
       
       if (qsid.length() > 0 && qpass.length() > 0) {
         Serial.println("clearing eeprom");
-//        for (int i = 0; i < 96; ++i) {
-        for (int i = 0; i < 224; ++i) {
+//        for (int i = 0; i < 96; ++i) {  // ssid, password
+//        for (int i = 0; i < 224; ++i) { // + firebase host, firabase auth
+        for (int i = 0; i < 244; ++i) { // + working mode
           EEPROM.write(i, 0);
         }
         Serial.println(qsid);
@@ -304,19 +337,49 @@ void createWebServer()
             Serial.println(qfbauth[i]);
           }
         }
+
+        // save working mode into eeprom
+        if (qmode.length() > 0) {
+          // mode size 20 characters
+          Serial.println("writing eeprom mode:");
+          for (int i = 0; i < qmode.length(); ++i)
+          {
+            EEPROM.write(224 + i, qmode[i]);
+            Serial.print("Wrote: ");
+            Serial.println(qmode[i]);
+          }
+        }
         EEPROM.commit();
 
         content = "{\"Success\":\"saved to eeprom... reset to boot into new wifi\"}";
         statusCode = 200;
+        Serial.println("Sending 200");
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        server.send(statusCode, "application/json", content);
         ESP.reset();
       } else {
         content = "{\"Error\":\"404 not found\"}";
         statusCode = 404;
         Serial.println("Sending 404");
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        server.send(statusCode, "application/json", content);
       }
-      server.sendHeader("Access-Control-Allow-Origin", "*");
-      server.send(statusCode, "application/json", content);
 
     });
   } 
 }
+//------------------------- Functions about cloud
+bool updateCloud(void)
+{
+  int c = 0;
+  Serial.println("Waiting for update cloud");
+  Serial.print("Firebase Host:");
+  Serial.println(gFirebaseHost);
+  Serial.print("Firebase Auth:");
+  Serial.println(gFirebaseAuth);
+  
+  Serial.println("");
+  Serial.println("updateCloud() Finished");
+  return true;
+}
+//------------------------- Functions about sensor

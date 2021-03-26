@@ -93,8 +93,8 @@ void setup()
   
   while ((WiFi.status() != WL_CONNECTED))
   {
-    Serial.print(".");
-    delay(100);
+    Serial.println(".");
+    delay(1000);
     server.handleClient();
   }
 
@@ -124,12 +124,12 @@ bool testWifi(void)
 {
   int c = 0;
   Serial.println("Waiting for Wifi to connect");
-  while ( c < 20 ) {
+  while ( c < 30 ) {
     if (WiFi.status() == WL_CONNECTED)
     {
       return true;
     }
-    delay(500);
+    delay(1000);
     Serial.print("*");
     c++;
   }
