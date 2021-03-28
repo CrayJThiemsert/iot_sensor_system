@@ -17,6 +17,7 @@
 #include <DHT.h>
 #include<FirebaseArduino.h>
 
+
 #define THE_NODE_SSID "theNode_DHT"
 #define THE_NODE_PASSWORD ""
 
@@ -354,8 +355,16 @@ void createWebServer()
         content = "{\"Success\":\"saved to eeprom... reset to boot into new wifi\"}";
         statusCode = 200;
         Serial.println("Sending 200");
-        server.sendHeader("Access-Control-Allow-Origin", "*");
-        server.send(statusCode, "application/json", content);
+        server.sendHeader("Connection", "close");
+        server.send(200, "text/html", content);
+//        server.sendHeader("Access-Control-Allow-Origin", "*");
+//        server.addHeader("Content-Type", "text/plain");
+//        server.send(statusCode, "application/json", content);
+//        server.on("/header", HTTP_GET, [](AsyncWebServerRequest *request){
+//          AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "Ok");
+//          response->addHeader("Test-Header", "My header value");
+//          request->send(response);
+//        });
         ESP.reset();
       } else {
         content = "{\"Error\":\"404 not found\"}";

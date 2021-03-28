@@ -274,13 +274,14 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
     );
   }
 
-  Future<Null> connection() async {
+  Future<http.Response> connection() async {
     var url =
     // Uri.https('www.googleapis.com', '/books/v1/volumes', {'q': '{http}'});
     Uri.http(Constants.of(context).DEFAULT_THE_NODE_IP, '/setting', {'ssid': globals.g_internet_ssid, 'pass': globals.g_internet_password});
 
     // Await the http get response, then decode the json-formatted response.
-    var response = await http.get(url);
+    final response = await http.get(url);
+    print("status code =${response.statusCode}");
     if (response.statusCode == 200) {
       print('Device[${_ssid}] - setting is ok!!');
       _passwordController.text = "Device[${_ssid}] - setting is ok!!";
@@ -291,8 +292,12 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
       print('Device[${_ssid}] - setting is not ok!!');
       _passwordController.text = "Device[${_ssid}] - setting is not ok!!";
       // print('Request failed with status: ${response.statusCode}.');
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to do wifi settings');
     }
 
+    return response;
     // print("_ip=${_ip}");
     // widget.channel = await Socket.connect('192.168.1.144', 80).then((Socket sock) {
     //   widget.channel = sock;

@@ -14,7 +14,8 @@
 
 // Config DHT
 #define DHTPIN 4
-#define DHTTYPE DHT11
+//#define DHTTYPE DHT11
+#define DHTTYPE DHT22
 
 String name;
 DHT dht(DHTPIN, DHTTYPE);
@@ -65,7 +66,12 @@ void loop() {
       return;
   }
   Serial.print("pushed: /logDHT/");
-  Serial.println(name);
+  Serial.print(name);
+  Serial.print(" humid: ");
+  Serial.print(h);
+  Serial.print(" % temperature: ");
+  Serial.print(t);
+  Serial.println(" Celsius");
   
   delay(5000);
 }
