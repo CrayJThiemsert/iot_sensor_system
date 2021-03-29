@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:after_layout/after_layout.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:ftiotsystem/utils/constants.dart';
 import 'package:wifi/wifi.dart';
 
@@ -128,7 +129,7 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
           ),
           ElevatedButton(
             child: Text('connect'),
-            onPressed: connection,
+            onPressed: gotoHomePage,
             // onPressed: executeEsptouch, // too complicated to use, because we don't know how to verify/handle response.
           ),
           // ElevatedButton(
@@ -209,7 +210,7 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
 
   @override
   void dispose() {
-    widget.channel.close();
+    // widget.channel.close();
     super.dispose();
   }
 
@@ -272,6 +273,15 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
       context,
       MaterialPageRoute(builder: (context) => ChooseDevicePage()),
     );
+  }
+
+  void gotoDeviceDetailPage() {
+    Navigator.pushNamedAndRemoveUntil(context, "/DetailDevicePage", (route) => false);
+  }
+
+  void gotoHomePage() {
+    connection();
+    Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false);
   }
 
   Future<http.Response> connection() async {

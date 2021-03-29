@@ -202,7 +202,7 @@ class _ChooseNetworkPageState extends State<ChooseNetworkPage> with AfterLayoutM
 
   @override
   void dispose() {
-    widget.channel.close();
+    // widget.channel.close();
     super.dispose();
   }
 

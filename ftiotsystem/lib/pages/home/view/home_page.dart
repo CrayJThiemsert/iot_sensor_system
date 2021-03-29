@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ftiotsystem/pages/network/choose_network.dart';
-import 'package:ftiotsystem/pages/newdevice/new_device.dart';
+
 
 class HomePage extends StatelessWidget {
   @override
