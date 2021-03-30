@@ -24,6 +24,7 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 30
@@ -55,5 +56,17 @@ flutter {
 }
 
 dependencies {
+//    implementation 'com.android.support:multidex:1.0.3'
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation 'com.google.firebase:firebase-analytics:17.2.0'
+    // Import the BoM for the Firebase platform
+//    implementation platform('com.google.firebase:firebase-bom:26.8.0')
+//    implementation 'com.google.firebase:firebase-core:17.5.0'
+//    implementation 'com.google.firebase:firebase-database:19.7.0'
+
+
 }
+
+

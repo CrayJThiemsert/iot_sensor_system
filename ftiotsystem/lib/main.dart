@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ftiotsystem/pages/device/choose_device.dart';
@@ -5,15 +6,49 @@ import 'package:ftiotsystem/pages/network/choose_network.dart';
 import 'package:ftiotsystem/utils/constants.dart';
 
 import 'pages/home/home.dart';
+import 'dart:io' show Platform;
 
-void main() => runApp(
-  Constants(
-    child: MyApp(),
-  ),
-);
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  // final FirebaseApp app = await Firebase.initializeApp(
+  //   name: 'db2',
+  //   options: Platform.isIOS || Platform.isMacOS
+  //       ? const FirebaseOptions(
+  //     appId: '1:297855924061:ios:c6de2b69b03a5be8',
+  //     apiKey: 'AIzaSyCbK11_NkEfVdkc6u4QwdTMY1D0cqNteKA',
+  //     projectId: 'asset-management-lff',
+  //     messagingSenderId: '1046253125651',
+  //     databaseURL: 'https://asset-management-lff.firebaseio.com',
+  //   )
+  //       : const FirebaseOptions(
+  //     appId: '1:1046253125651:android:7f197e41fe80cea000ffe6',
+  //     apiKey: 'AIzaSyCbK11_NkEfVdkc6u4QwdTMY1D0cqNteKA',
+  //     messagingSenderId: '1046253125651',
+  //     projectId: 'asset-management-lff',
+  //     databaseURL: 'https://asset-management-lff.firebaseio.com',
+  //   ),
+  // );
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+
+  runApp(
+    Constants(
+      // child: MyApp(app: app),
+      child: MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({Key key, this.app}) : super(key: key);
+
+  final FirebaseApp app;
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,7 +60,7 @@ class MyApp extends StatelessWidget {
       home: SplashScreen.navigate(
         name: 'intro.flr',
         // next: (context) => MainHomePage(title: 'Flutter Demo Home Page'),
-        next: (context) => HomePage(),
+        next: (context) => HomePage(app: widget.app),
         until: () => Future.delayed(Duration(seconds: 5)),
         startAnimation: '1',
       ),
