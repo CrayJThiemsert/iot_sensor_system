@@ -1,5 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:ftiotsystem/pages/device/entity/item_entity.dart';
+import 'package:ftiotsystem/pages/device/model/device.dart';
 
 class DevicesList extends StatefulWidget {
   @override
@@ -10,6 +12,7 @@ class _DevicesListState extends State<DevicesList> {
   final dbRef = FirebaseDatabase.instance.reference().child("users/cray/devices");
   // List<Map<dynamic, String>> lists = [];
   List<String> lists = [];
+  List<Device> deviceLists = [];
   List<String> images = [
     "assets/Apples.png",
     "assets/Bananas.png",
@@ -29,35 +32,35 @@ class _DevicesListState extends State<DevicesList> {
           future: dbRef.once(),
           builder: (context, AsyncSnapshot<DataSnapshot> snapshot) {
             if (snapshot.hasData) {
+
               lists.clear();
+              deviceLists.clear();
               Map<dynamic, dynamic> values = snapshot.data.value;
               values.forEach((key, values) {
                 print('key=${key}');
-                lists.add(key);
+                // lists.add(key);
+                // deviceLists.add(Device.fromEntity(ItemEntity.fromSnapshot(snapshot.data)));
+                deviceLists.add(Device(
+                  id: values['id'],
+                  uid: values['uid'],
+                  // index: int.parse(values['index'].toString() ?? '-1'),
+                  index: int.parse('${values['index'] ?? "0"}'),
+                  name: values['name'],
+                ));
               });
-              print('${lists.length}');
+
+
+              print('${deviceLists.toString()}');
               return GridView.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0,
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 4.0,
+                  mainAxisSpacing: 4.0,
                   shrinkWrap: true,
-                  children: List.generate(lists.length, (index) {
+                  children: List.generate(deviceLists.length, (index) {
                     return Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Center(
-                        child: Container(
-                          color: Colors.amberAccent,
-                          child: Text('${lists[index]}',),
-                          // decoration: BoxDecoration(
-                          //
-                          //   // image: DecorationImage(
-                          //   //   // image: NetworkImage('img.png'),
-                          //   //   fit: BoxFit.cover,
-                          //   // ),
-                          //   borderRadius:
-                          //   BorderRadius.all(Radius.circular(20.0),),
-                          // ),
-                        ),
+                        child: DeviceCard(device: deviceLists[index]),
                       ),
                     );
                   },),
@@ -128,5 +131,32 @@ class _DevicesListState extends State<DevicesList> {
     //         return CircularProgressIndicator();
     //       }),
     // );
+  }
+}
+
+class DeviceCard extends StatelessWidget {
+  const DeviceCard({
+    Key key,
+    @required this.device,
+  }) : super(key: key);
+
+  final Device device;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextStyle nameStyle = Theme.of(context).textTheme.caption;
+    final TextStyle textStyle = Theme.of(context).textTheme.button;
+    return Card(
+      color: Colors.amberAccent,
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('${device.uid}', style: textStyle,),
+            Text('${device.name}', style: nameStyle, textAlign: TextAlign.center,),
+          ],
+        ),
+      ),
+    );
   }
 }
