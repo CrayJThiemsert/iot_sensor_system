@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:ftiotsystem/pages/device/entity/item_entity.dart';
 import 'package:ftiotsystem/pages/device/model/device.dart';
 
@@ -52,89 +53,29 @@ class _DevicesListState extends State<DevicesList> {
 
               print('${deviceLists.toString()}');
               return GridView.count(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 4.0,
-                  mainAxisSpacing: 4.0,
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 2.0,
+                  mainAxisSpacing: 10.0,
+                  padding: const EdgeInsets.all(20),
                   shrinkWrap: true,
                   children: List.generate(deviceLists.length, (index) {
                     return Padding(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Center(
                         child: DeviceCard(device: deviceLists[index]),
                       ),
                     );
                   },),
               );
-              // return Center(
-              //   child: Container(
-              //     child: GridView.builder(
-              //       itemCount: images.length,
-              //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              //         crossAxisCount: 2,
-              //         crossAxisSpacing: 5.0,
-              //         mainAxisSpacing: 5.0,
-              //       ),
-              //       itemBuilder: (BuildContext context, int index) {
-              //         return Text(
-              //           images[index].toString(),
-              //         );
-              //       },
-              //     ),
-              //   ),
-              // );
-              // return new ListView.builder(
-              //     shrinkWrap: true,
-              //     itemCount: values.length,// lists.length,
-              //     itemBuilder: (BuildContext context, int index) {
-              //       return Card(
-              //         child: Column(
-              //           crossAxisAlignment: CrossAxisAlignment.start,
-              //           children: <Widget>[
-              //             Text(lists[index].toString()),
-              //             // Text("Humidity: " + lists[index]["humidity"]),
-              //             // Text("Temperature: "+ lists[index]["temperature"]),
-              //           ],
-              //         ),
-              //       );
-              //     });
             }
             return CircularProgressIndicator();
           }),
     );
 
-    // return Container(
-    //   child: FutureBuilder(
-    //       future: dbRef.once(),
-    //       builder: (context, AsyncSnapshot<DataSnapshot> snapshot) {
-    //         if (snapshot.hasData) {
-    //           lists.clear();
-    //           Map<dynamic, dynamic> values = snapshot.data.value;
-    //           values.forEach((key, values) {
-    //             lists.add(values);
-    //           });
-    //           return new ListView.builder(
-    //               shrinkWrap: true,
-    //               itemCount: lists.length,
-    //               itemBuilder: (BuildContext context, int index) {
-    //                 return Card(
-    //                   child: Column(
-    //                     crossAxisAlignment: CrossAxisAlignment.start,
-    //                     children: <Widget>[
-    //                       Text("Humidity: " + lists[index].keys[index].toString()),
-    //                       // Text("Humidity: " + lists[index]["humidity"]),
-    //                       // Text("Temperature: "+ lists[index]["temperature"]),
-    //                     ],
-    //                   ),
-    //                 );
-    //               });
-    //         }
-    //         return CircularProgressIndicator();
-    //       }),
-    // );
   }
 }
 
-class DeviceCard extends StatelessWidget {
+class DeviceCard extends StatefulWidget {
   const DeviceCard({
     Key key,
     @required this.device,
@@ -143,18 +84,43 @@ class DeviceCard extends StatelessWidget {
   final Device device;
 
   @override
+  _DeviceCardState createState() => _DeviceCardState();
+}
+
+class _DeviceCardState extends State<DeviceCard> {
+  @override
   Widget build(BuildContext context) {
     final TextStyle nameStyle = Theme.of(context).textTheme.caption;
     final TextStyle textStyle = Theme.of(context).textTheme.button;
-    return Card(
-      color: Colors.amberAccent,
-      child: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text('${device.uid}', style: textStyle,),
-            Text('${device.name}', style: nameStyle, textAlign: TextAlign.center,),
-          ],
+    return Bounce(
+      duration: Duration(milliseconds: 100),
+      onPressed: () {
+        print('on press ${widget.device.uid}');
+
+        String uri = '/device/${widget.device.uid}';
+
+        print('${uri} pressed...');
+        Navigator.pushNamed(context, uri, arguments: widget.device);
+
+      },
+      child: Card(
+        color: Colors.amberAccent,
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text('${widget.device.uid}',
+                  style: textStyle,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Text('${widget.device.name}', style: nameStyle, textAlign: TextAlign.center,),
+              ),
+            ],
+          ),
         ),
       ),
     );

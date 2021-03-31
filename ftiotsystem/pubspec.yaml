@@ -30,6 +30,7 @@ dependencies:
   after_layout: ^1.1.0
   app_settings: ^4.1.0
   http: ^0.13.1
+  flutter_bounce: ^1.0.8
 
   firebase_core: ^1.0.2
   firebase_database: ^6.1.1

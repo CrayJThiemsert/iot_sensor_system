@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ftiotsystem/pages/device/choose_device.dart';
+import 'package:ftiotsystem/pages/device/model/device.dart';
+import 'package:ftiotsystem/pages/device/view/show_device_page.dart';
 import 'package:ftiotsystem/pages/network/choose_network.dart';
 import 'package:ftiotsystem/utils/constants.dart';
 
@@ -74,19 +76,19 @@ class _MyAppState extends State<MyApp> {
           return MaterialPageRoute(builder: (context) => ChooseDevicePage());
         }
         // Prepare for case specify device id
-        // var uri = Uri.parse(settings.name);
-        // if(uri.pathSegments.length == 2) {
-        //   var uid = uri.pathSegments[1];
-        //   Category category = settings.arguments;
-        //   switch (uri.pathSegments.first) {
-        //     case 'category':
-        //       {
-        //         return MaterialPageRoute(builder: (context) => CategoryPage(categoryUid: uid, category: category));
-        //       }
-        //       break;
-        //   }
-        // }
-        //
+        var uri = Uri.parse(settings.name);
+        if(uri.pathSegments.length == 2) {
+          var uid = uri.pathSegments[1];
+          Device device = settings.arguments;
+          switch (uri.pathSegments.first) {
+            case 'device':
+              {
+                return MaterialPageRoute(builder: (context) => ShowDevicePage(deviceUid: uid, device: device));
+              }
+              break;
+          }
+        }
+
         // if(uri.pathSegments.length == 4) {
         //   var path = uri.pathSegments[2];
         //   var categoryUid = uri.pathSegments[1];
