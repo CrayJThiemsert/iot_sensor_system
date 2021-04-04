@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 String _ssid = '';  // Wifi name
 String _bssid = 'AA:CC:A8:88:5B:AC'; // Dummy WiFi BSSID
 String _password = '';  // Wifi password
+String _deviceName = '';  // Device name
 
 class ChooseDevicePage extends StatefulWidget {
   Socket channel;
@@ -29,8 +30,10 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
   String _ip = 'click button to get ip.';
   List<WifiResult> theNodeSSIDList = [];
   String ssid = '', password = '';
+  String deviceName = '';
 
   var _ssidController = TextEditingController();
+  var _deviceNameController = TextEditingController();
   var _passwordController = TextEditingController();
 
   @override
@@ -102,6 +105,22 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
             controller: _ssidController,
             onChanged: (value) {
               ssid = value;
+            },
+          ),
+          TextField(
+            decoration: InputDecoration(
+              border: UnderlineInputBorder(),
+              filled: true,
+              icon: Icon(Icons.lock_outline),
+              hintText: 'Your device name',
+              labelText: 'device name',
+            ),
+            keyboardType: TextInputType.text,
+            controller: _deviceNameController,
+            onChanged: (value) {
+              deviceName = value;
+              _deviceName = deviceName;
+              globals.g_device_name = _deviceName;
             },
           ),
           TextField(
@@ -285,9 +304,10 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
   }
 
   Future<http.Response> connection() async {
+    String mode = "setup";
     var url =
     // Uri.https('www.googleapis.com', '/books/v1/volumes', {'q': '{http}'});
-    Uri.http(Constants.of(context).DEFAULT_THE_NODE_IP, '/setting', {'ssid': globals.g_internet_ssid, 'pass': globals.g_internet_password});
+    Uri.http(Constants.of(context).DEFAULT_THE_NODE_IP, '/setting', {'ssid': globals.g_internet_ssid, 'pass': globals.g_internet_password, 'mode': mode, 'name': globals.g_device_name});
 
     // Await the http get response, then decode the json-formatted response.
     final response = await http.get(url);

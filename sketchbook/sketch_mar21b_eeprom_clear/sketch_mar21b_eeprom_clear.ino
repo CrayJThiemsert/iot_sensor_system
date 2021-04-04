@@ -10,8 +10,16 @@
 
 #include <EEPROM.h>
 
+#ifdef ESP32
+  #include <WiFi.h>
+#else
+  #include <ESP8266WiFi.h>
+#endif
+
 // Set to true to reset eeprom before to write something
 #define RESET_EEPROM true
+
+String gMacAddress = "";
 
 void setup() {
   Serial.begin(115200);
@@ -53,6 +61,14 @@ void setup() {
 
   // turn the LED on when we're done
   digitalWrite(13, HIGH);
+
+  Serial.print("ESP Board MAC Address:  ");
+  Serial.println(WiFi.macAddress());
+
+  gMacAddress = WiFi.macAddress();
+  Serial.print("gMacAddress:  ");
+  Serial.println(gMacAddress);
+  
 }
 
 void loop() {

@@ -31,10 +31,11 @@ IPAddress gateway={192,168,1,1};      // Set up "the Node"'s AP mode Gateway
 IPAddress subnet={255,255,255,0};     // Set up "the Node"'s AP mode Subnet
 // ======================================================================
 // Working Mode(mode) [20 characters]
-#define POLLING_MODE "polling mode" 
-#define REQUEST_MODE "request mode" 
-#define BURST_MODE "burst mode" // Default, use after installation process finished
-#define OFFLINE_MODE "offline mode"
+#define POLLING_MODE "polling" 
+#define REQUEST_MODE "request" 
+#define BURST_MODE "burst" // Default, use after installation process finished
+#define OFFLINE_MODE "offline"
+#define SETUP_MODE "setup"
 // ======================================================================
 // Define NTP Client to get time
 WiFiUDP ntpUDP;
@@ -73,14 +74,19 @@ String gWorkingMode = BURST_MODE;
 String gCurrentDateTimeString = "-";
 float gTemperature = 0;
 float gHumidity = 0;
+String gMacAddress = "";
+String gDeviceName = "";
 
 // Function Decalration
 bool testWifi(void);
+void createWebServer(void);
 void launchWeb(void);
 void setupAP(void);
 bool getCurrentDateTime(void);
 bool readSensor(void);
 bool saveDataToCloudDatabase(void);
+bool createDeviceDataToCloudDatabase(void);
+bool updateWorkingMode(void);
 
 //Establishing Local server at port 80 whenever required
 ESP8266WebServer server(80);
@@ -98,6 +104,10 @@ void setup()
   Serial.println();
   Serial.println();
   Serial.println("Startup");
+
+  Serial.print("ESP Board MAC Address:  ");
+  gMacAddress = WiFi.macAddress();
+  Serial.println(gMacAddress);
 
   //---------------------------------------- Read eeprom for ssid and pass
   Serial.println("Reading EEPROM ssid");
@@ -147,13 +157,32 @@ void setup()
   Serial.println(emode);
   gWorkingMode = emode;
 
+  String ename = "";
+  for (int i = 244; i < 308; ++i)
+  {
+    ename += char(EEPROM.read(i));
+  }
+  Serial.print("NAME: ");
+  Serial.println(ename);
+  gDeviceName = ename;
+
   // Try to connect wifi by loaded ssid and password values from eeprom
   WiFi.begin(esid.c_str(), epass.c_str());
   if (testWifi())
   {
-    Serial.println("Succesfully Connected!!!");
+    Serial.println("Succesfully Internet Wifi Connected!!!");
 
-    
+    if(gWorkingMode == SETUP_MODE) {
+      Serial.println("Doing.. setup new device...!!!");
+      if(createDeviceDataToCloudDatabase()) {
+        Serial.println("Create a new device in cloud database is successfully!!!");
+      } else {
+        Serial.println("Create a new device in cloud database failured!!!");
+      }
+      
+    } else {
+      Serial.println("Continue to sensor reading process...!!!");
+    }
     return;
   }
   else
@@ -295,9 +324,8 @@ void setupAP(void)
   Serial.println("over");
 }
 
-void createWebServer()
-{
- {
+void createWebServer(void) {
+ 
     server.on("/", []() {
 
       IPAddress ip = WiFi.softAPIP();
@@ -327,13 +355,15 @@ void createWebServer()
       String qfbhost = server.arg("fbhost");
       String qfbauth = server.arg("fbauth");
 
+      String qname = server.arg("name");
       String qmode = server.arg("mode");
       
       if (qsid.length() > 0 && qpass.length() > 0) {
         Serial.println("clearing eeprom");
 //        for (int i = 0; i < 96; ++i) {  // ssid, password
 //        for (int i = 0; i < 224; ++i) { // + firebase host, firabase auth
-        for (int i = 0; i < 244; ++i) { // + working mode
+//        for (int i = 0; i < 244; ++i) { // + working mode
+        for (int i = 0; i < 308; ++i) { // + device name
           EEPROM.write(i, 0);
         }
         Serial.println(qsid);
@@ -388,6 +418,18 @@ void createWebServer()
             Serial.println(qmode[i]);
           }
         }
+
+        // save device name into eeprom
+        if (qname.length() > 0) {
+          // (device)name size 64 characters
+          Serial.println("writing eeprom device name:");
+          for (int i = 0; i < qname.length(); ++i)
+          {
+            EEPROM.write(244 + i, qname[i]);
+            Serial.print("Wrote: ");
+            Serial.println(qname[i]);
+          }
+        }
         EEPROM.commit();
 
         content = "{\"Success\":\"saved to eeprom... reset to boot into new wifi\"}";
@@ -411,9 +453,7 @@ void createWebServer()
         server.sendHeader("Access-Control-Allow-Origin", "*");
         server.send(statusCode, "application/json", content);
       }
-
     });
-  } 
 }
 //------------------------- Functions about cloud
 bool saveDataToCloudDatabase(void) {
@@ -439,11 +479,14 @@ bool saveDataToCloudDatabase(void) {
     JsonObject& root = jsonBuffer.createObject();
   
     JsonObject& sensorValues = root.createNestedObject(gCurrentDateTimeString);
+    sensorValues["uid"] = gCurrentDateTimeString;
     sensorValues["temperature"] = gTemperature;
     sensorValues["humidity"] = gHumidity;
+    sensorValues["deviceId"] = gMacAddress;
 
     // Append a new value to temporary node
-    String nodeString = "users/cray/devices/ht-00001/ht-00001_history/" + gCurrentDateTimeString;
+//    String nodeString = "users/cray/devices/ht-00001/ht-00001_history/" + gCurrentDateTimeString;
+    String nodeString = "users/cray/devices/" + gMacAddress + "/" + gMacAddress + "_history/" + gCurrentDateTimeString;
     Serial.print("nodeString=");
     Serial.println(nodeString);
 
@@ -456,6 +499,10 @@ bool saveDataToCloudDatabase(void) {
         Serial.println(Firebase.error());  
         return false;
     }
+    Serial.print("uid=");
+    Serial.println(gCurrentDateTimeString);
+    Serial.print("deviceId=");
+    Serial.println(gMacAddress);
     Serial.print(" humid: ");
     Serial.print(gHumidity);
     Serial.print(" % temperature: ");
@@ -470,6 +517,90 @@ bool saveDataToCloudDatabase(void) {
   }
   return true;
 }
+
+bool createDeviceDataToCloudDatabase(void) {
+  int c = 0;
+
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  gFirebaseHost = FIREBASE_HOST;
+  gFirebaseAuth = FIREBASE_AUTH;
+  Serial.println("Waiting for create a new device data into the cloud database.");
+  Serial.print("Firebase Host:");
+  Serial.println(gFirebaseHost);
+  Serial.print("Firebase Auth:");
+  Serial.println(gFirebaseAuth);
+
+  // Get current date time uid.
+  if(getCurrentDateTime()) {
+
+    Serial.print("gCurrentDateTimeString=");
+    Serial.println(gCurrentDateTimeString);
+
+    // Create read sensor json object
+    StaticJsonBuffer<256> jsonBuffer;
+    JsonObject& root = jsonBuffer.createObject();
+  
+    JsonObject& deviceValues = root.createNestedObject(gMacAddress);
+    deviceValues["id"] = gMacAddress;
+    deviceValues["uid"] = gMacAddress;
+    deviceValues["name"] = gDeviceName;
+
+    // Append a new value to temporary node
+//    String nodeString = "users/cray/devices/ht-00001;
+    String nodeString = "users/cray/devices/" + gMacAddress;
+    Serial.print("nodeString=");
+    Serial.println(nodeString);
+
+    // Create the new sensor values node
+    Firebase.set(nodeString, deviceValues); 
+
+    // handle error
+    if (Firebase.failed()) {
+        Serial.print("setting /node data failed:");
+        Serial.println(Firebase.error());  
+        return false;
+    }
+    Serial.print("uid=");
+    Serial.println(gCurrentDateTimeString);
+    Serial.print("deviceId=");
+    Serial.println(gMacAddress);
+    Serial.print(" name: ");
+    Serial.print(gDeviceName);
+    
+    Serial.println("");
+    Serial.println("createDeviceDataToCloudDatabase() Finished");
+
+    // set working mode from setup mode to burst mode.
+    if(updateWorkingMode()) {
+      Serial.println("updateWorkingMode is successfully!! then reset esp to the new working mode->");
+      ESP.reset();
+    } else {
+      Serial.println("updateWorkingMode failured!!");
+    }
+  } else {
+    Serial.println("get the current date time string failured!!");
+    return false;
+  }
+  return true;
+}
+
+bool updateWorkingMode(void) {
+  // save working mode into eeprom
+  bool result = false;
+  String qmode = BURST_MODE;
+  if (qmode.length() > 0) {
+    // mode size 20 characters
+    Serial.println("writing eeprom mode:");
+    for (int i = 0; i < qmode.length(); ++i)
+    {
+      EEPROM.write(224 + i, qmode[i]);
+      Serial.print("Wrote: ");
+      Serial.println(qmode[i]);
+    }
+  }
+  return result;
+}
+
 //------------------------- Functions about sensor
 
 /**

@@ -53,9 +53,6 @@ class _ShowDevicePageState extends State<ShowDevicePage> {
 
       builder: (context, AsyncSnapshot<Event> snap) {
         if (snap.hasData && !snap.hasError) {
-
-
-
           print('=>${snap.data.snapshot.value.toString()}');
           var weatherHistory = WeatherHistory.fromJson(snap.data.snapshot.value);
           // var weatherHistory = WeatherHistory.fromSnapshot(snap.data.snapshot);
