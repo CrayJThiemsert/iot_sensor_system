@@ -303,7 +303,11 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
     Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false);
   }
 
+  /**
+   * First contact to "the Node" to pass internet wifi ssid and password
+   */
   Future<http.Response> connection() async {
+
     String mode = "setup";
     var url =
     // Uri.https('www.googleapis.com', '/books/v1/volumes', {'q': '{http}'});
