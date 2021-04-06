@@ -1,5 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:ftiotsystem/pages/device/entity/item_entity.dart';
 import 'package:ftiotsystem/pages/device/model/device.dart';
@@ -54,16 +56,16 @@ class _DevicesListState extends State<DevicesList> {
               print('${deviceLists.toString()}');
               return GridView.count(
                   crossAxisCount: 2,
-                  crossAxisSpacing: 2.0,
-                  mainAxisSpacing: 10.0,
-                  padding: const EdgeInsets.all(20),
+                  crossAxisSpacing: 5.0,
+                  mainAxisSpacing: 5.0,
+                  scrollDirection: Axis.vertical,
+                  // padding: const EdgeInsets.all(10),
+                  childAspectRatio: 16/9,
                   shrinkWrap: true,
                   children: List.generate(deviceLists.length, (index) {
                     return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: DeviceCard(device: deviceLists[index]),
-                      ),
+                      padding: const EdgeInsets.all(2.0),
+                      child: DeviceCard(device: deviceLists[index]),
                     );
                   },),
               );
@@ -91,7 +93,7 @@ class _DeviceCardState extends State<DeviceCard> {
   @override
   Widget build(BuildContext context) {
     final TextStyle nameStyle = Theme.of(context).textTheme.caption;
-    final TextStyle textStyle = Theme.of(context).textTheme.button;
+    final TextStyle subtitleStyle = Theme.of(context).textTheme.subtitle1;
     return Bounce(
       duration: Duration(milliseconds: 100),
       onPressed: () {
@@ -103,23 +105,27 @@ class _DeviceCardState extends State<DeviceCard> {
         Navigator.pushNamed(context, uri, arguments: widget.device);
 
       },
-      child: Card(
-        color: Colors.amberAccent,
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text('${widget.device.uid}',
-                  style: textStyle,
+      child: Container(
+        // width: 250,
+        height: 280,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('${widget.device.name}',
+                  style: nameStyle,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: Text('${widget.device.name}', style: nameStyle, textAlign: TextAlign.center,),
-              ),
-            ],
+                Text('${widget.device.uid}', style: subtitleStyle, textAlign: TextAlign.center,),
+              ],
+            ),
           ),
         ),
       ),

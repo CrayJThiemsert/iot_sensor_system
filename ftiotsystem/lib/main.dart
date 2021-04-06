@@ -58,6 +58,13 @@ class _MyAppState extends State<MyApp> {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'Kanit',
+        textTheme: TextTheme(
+          caption: TextStyle(fontFamily: 'Kanit', fontSize:  14.0, fontWeight: FontWeight.w600, color: Colors.black.withOpacity(0.6),),
+          subtitle1: TextStyle(fontFamily: 'Kanit', fontSize:  12.0, fontWeight: FontWeight.w300, color: Colors.grey.withOpacity(0.6),),
+          subtitle2: TextStyle(fontFamily: 'Kanit', fontSize:  12.0, fontWeight: FontWeight.w600, color: Colors.lightGreen,),
+          headline1: TextStyle(fontSize:  36.0, fontWeight: FontWeight.bold),
+        ),
       ),
       home: SplashScreen.navigate(
         name: 'intro.flr',

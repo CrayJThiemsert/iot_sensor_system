@@ -99,88 +99,19 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
-          ElevatedButton(onPressed: () {
-            print('get data name2 once...');
-            ref.child("Name2").once().then((DataSnapshot data){
-              print('value=${data.value}');
-              print('key=${data.key}');
-              // setState(() {
-              //   retrievedName = data.value;
-              // });
-            });
-          }, child: Text('Get sample data')),
+          // ElevatedButton(onPressed: () {
+          //   print('get data name2 once...');
+          //   ref.child("Name2").once().then((DataSnapshot data){
+          //     print('value=${data.value}');
+          //     print('key=${data.key}');
+          //     // setState(() {
+          //     //   retrievedName = data.value;
+          //     // });
+          //   });
+          // }, child: Text('Get sample data')),
 
           DevicesList(),
 
-          // Container(
-          //   child: Column(
-          //   children: <Widget>[
-          //       Row(
-          //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //           children: <Widget>[
-          //             Text(name),
-          //             Flexible(child: TextField(controller: myController)),
-          //           ],
-          //       ),
-          //       ElevatedButton(
-          //         onPressed: () {
-          //           ref.child(name).set(myController.text);
-          //         },
-          //         child: Text("Submit"),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          //
-          // Flexible(
-          //   child: Center(
-          //     child: _error == null
-          //       ? Text(
-          //         'Button tapped $_counter time${_counter == 1 ? '' : 's'}.\n\n'
-          //         'This includes all devices, ever.',
-          //       )
-          //       : Text(
-          //         'Error retrieving button tap count:\n${_error.message}',
-          //       ),
-          //   ),
-          // ),
-          // ListTile(
-          //   leading: Checkbox(
-          //     onChanged: (bool value) {
-          //       setState(() {
-          //         _anchorToBottom = value;
-          //       });
-          //     },
-          //     value: _anchorToBottom,
-          //   ),
-          //   title: const Text('Anchor to bottom'),
-          // ),
-          // Flexible(
-          //   child: FirebaseAnimatedList(
-          //     key: ValueKey<bool>(_anchorToBottom),
-          //     query: _messagesRef,
-          //     reverse: _anchorToBottom,
-          //     sort: _anchorToBottom
-          //       ? (DataSnapshot a, DataSnapshot b) => b.key.compareTo(a.key)
-          //       : null,
-          //     itemBuilder: (BuildContext context, DataSnapshot snapshot,
-          //     Animation<double> animation, int index) {
-          //       return SizeTransition(
-          //         sizeFactor: animation,
-          //         child: ListTile(
-          //           trailing: IconButton(
-          //             onPressed: () =>
-          //               _messagesRef.child(snapshot.key).remove(),
-          //             icon: const Icon(Icons.delete),
-          //           ),
-          //           title: Text(
-          //             '$index: ${snapshot.value.toString()}',
-          //           ),
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // ),
         ],
       ),
       // floatingActionButton: FloatingActionButton(

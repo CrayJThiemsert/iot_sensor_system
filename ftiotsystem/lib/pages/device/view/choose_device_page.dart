@@ -98,10 +98,10 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
               border: UnderlineInputBorder(),
               filled: true,
               icon: Icon(Icons.wifi),
-              hintText: 'Your wifi ssid',
-              labelText: 'ssid',
+              hintText: 'Your selected device network',
+              labelText: 'selected device network',
             ),
-            keyboardType: TextInputType.text,
+            enabled: false,
             controller: _ssidController,
             onChanged: (value) {
               ssid = value;
@@ -117,6 +117,12 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
             ),
             keyboardType: TextInputType.text,
             controller: _deviceNameController,
+            onTap: () {
+              if(globals.g_device_name.isEmpty) {
+                _deviceNameController.text = 'Humidity and Temperature Sensor';
+                globals.g_device_name = _deviceNameController.text;
+              }
+            },
             onChanged: (value) {
               deviceName = value;
               _deviceName = deviceName;
@@ -151,42 +157,6 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
             onPressed: gotoHomePage,
             // onPressed: executeEsptouch, // too complicated to use, because we don't know how to verify/handle response.
           ),
-          // ElevatedButton(
-          //   child: Text('connection'),
-          //   onPressed: connection,
-          //   // onPressed: executeEsptouch, // too complicated to use, because we don't know how to verify/handle response.
-          // ),
-
-          // ElevatedButton(
-          //   child: Text("AC On/Off",
-          //       style: TextStyle(
-          //           color: Colors.white,
-          //           fontStyle: FontStyle.italic,
-          //           fontSize: 20.0
-          //       )
-          //   ),
-          //   onPressed: _togglePower,
-          // ),
-          // ElevatedButton(
-          //   child: Text("Fan",
-          //       style: TextStyle(
-          //           color: Colors.white,
-          //           fontStyle: FontStyle.italic,
-          //           fontSize: 20.0
-          //       )
-          //   ),
-          //   onPressed: _fan,
-          // ),
-          // ElevatedButton(
-          //   child: Text("Mode",
-          //       style: TextStyle(
-          //           color: Colors.white,
-          //           fontStyle: FontStyle.italic,
-          //           fontSize: 20.0
-          //       )
-          //   ),
-          //   onPressed: _mode,
-          // ),
         ],
       );
     } else {
@@ -261,8 +231,10 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
       _ssidController.text = _ssid;
       if(_ssid.contains("theNode_")) {
         _passwordController.text = "Device Matched";
+        _ssidController.text = "Device Matched";
       } else {
         _passwordController.text = "Device Not Matched";
+        _ssidController.text = "Device Not Matched";
       }
     });
   }
@@ -374,9 +346,11 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
         _ssidController.text = _ssid;
         if(_ssid.contains("theNode_")) {
           _passwordController.text = "Device[${_ssid}] Matched";
+          _ssidController.text = "Device[${_ssid}] Matched";
           timer.cancel();
         } else {
           _passwordController.text = "Device[${_ssid}] Not Matched";
+          _ssidController.text = "Device[${_ssid}] Not Matched";
         }
         print("${_passwordController.text}");
       });
