@@ -158,6 +158,11 @@ class _ShowDevicePageState extends State<ShowDevicePage> {
                       child: Text('Device ${device.name ?? device.uid} Detail'),
                     ),
                   ),
+                  Center(
+                    child: Container(
+                      child: Text('latest when ${weatherHistory.weatherData.uid ?? 'no data'}'),
+                    ),
+                  ),
                   Card(
                     child: Row(
                       children: [

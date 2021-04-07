@@ -21,7 +21,7 @@ void loop() {
       resetCount = 0;
     } else {
       Serial.print("Reset button ON resetCount=");
-      Serial.println(resetCount);
+      Serial.println(resetCount);                           
       digitalWrite(2, HIGH);
       resetCount = resetCount + 1;
       
