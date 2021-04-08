@@ -31,15 +31,20 @@ class WeatherHistory extends Equatable {
   // }
 
   factory WeatherHistory.fromJson(Map<dynamic, dynamic> json) {
-    var key = json.keys.first.toString();
-    print('WeatherHistory.fromJson key=${key}');
-    print('WeatherHistory.fromJson json[key]=${json[key]}');
-    WeatherData data = WeatherData.fromJson(json[key]);
-    print('data.humidity=${data.humidity}');
-    return WeatherHistory(
-      key: key,
-      weatherData: WeatherData.fromJson(json[key]),
-    );
+    if(json != null) {
+      var key = json.keys.first.toString();
+      print('WeatherHistory.fromJson key=${key}');
+      print('WeatherHistory.fromJson json[key]=${json[key]}');
+      WeatherData data = WeatherData.fromJson(json[key]);
+      print('data.humidity=${data.humidity}');
+      return WeatherHistory(
+        key: key,
+        weatherData: WeatherData.fromJson(json[key]),
+      );
+    } else {
+      print('json.isEmpty=${json.isEmpty}');
+      return WeatherHistory();
+    }
   }
 
   factory WeatherHistory.fromSnapshot(DataSnapshot snap) {
