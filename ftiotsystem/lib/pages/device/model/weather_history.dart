@@ -11,25 +11,6 @@ class WeatherHistory extends Equatable {
   final double temperature;
   final WeatherData weatherData;
 
-  // factory WeatherHistory.fromJson(Map<dynamic, dynamic> json) {
-  //   double parser(dynamic source) {
-  //     try {
-  //       print('source=${source.toString()}');
-  //       return double.parse(source.toString());
-  //     } on FormatException {
-  //       return -1;
-  //     }
-  //   }
-  //
-  //   return WeatherHistory(
-  //       key: json['uid'],
-  //       // deviceId: json['deviceId'],
-  //       // humidity: parser(json['humidity']),
-  //       // temperature: parser(json['temperature'])
-  //     weatherData: WeatherData.fromJson(json),
-  //   );
-  // }
-
   factory WeatherHistory.fromJson(Map<dynamic, dynamic> json) {
     if(json != null) {
       var key = json.keys.first.toString();
