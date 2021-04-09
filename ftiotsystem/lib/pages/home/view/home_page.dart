@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           Center(
             child: ElevatedButton(
-              child: Text('Goto New Device Page'),
+              child: Text('Add New Device'),
               onPressed: () {
                 // Navigate to add new device page
                 Navigator.push(
@@ -134,31 +134,5 @@ class _HomePageState extends State<HomePage> {
 
     _messagesSubscription.cancel();
     _counterSubscription.cancel();
-  }
-
-  // DatabaseReference savePost(Post post) {
-  //   var id = databaseReference.child('posts/').push();
-  //   id.set(post.toJson());
-  //   return id;
-  // }
-
-  Future<void> _increment() async {
-    // Increment counter in transaction.
-    final TransactionResult transactionResult =
-    await _counterRef.runTransaction((MutableData mutableData) async {
-      mutableData.value = (mutableData.value ?? 0) + 1;
-      return mutableData;
-    });
-
-    if (transactionResult.committed) {
-      await _messagesRef.push().set(<String, String>{
-        _kTestKey: '$_kTestValue ${transactionResult.dataSnapshot.value}'
-      });
-    } else {
-      print('Transaction not committed.');
-      if (transactionResult.error != null) {
-        print(transactionResult.error.message);
-      }
-    }
   }
 }

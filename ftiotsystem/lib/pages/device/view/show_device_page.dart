@@ -1,9 +1,11 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:ftiotsystem/pages/device/database/device_database.dart';
 import 'package:ftiotsystem/pages/device/model/device.dart';
 import 'package:ftiotsystem/pages/device/model/weather_history.dart';
 import 'package:ftiotsystem/pages/user/model/user.dart';
+import 'package:ftiotsystem/utils/constants.dart';
 
 class ShowDevicePage extends StatefulWidget {
   String deviceUid;
@@ -15,7 +17,7 @@ class ShowDevicePage extends StatefulWidget {
   _ShowDevicePageState createState() => _ShowDevicePageState(deviceUid, device);
 }
 
-class _ShowDevicePageState extends State<ShowDevicePage> {
+class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<ShowDevicePage> {
   String deviceUid;
   Device device;
   User user = User(uid: 'cray');
@@ -45,6 +47,8 @@ class _ShowDevicePageState extends State<ShowDevicePage> {
     super.dispose();
     deviceDatabase.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -276,5 +280,54 @@ class _ShowDevicePageState extends State<ShowDevicePage> {
             );
           }
         });
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    // TODO: implement afterFirstLayout
+    switch(device.mode) {
+      case Constants.MODE_BURST: {
+        burstePressed = true;
+        requestPressed = false;
+        pollingPressed = false;
+        offlinePressed = false;
+      }
+      break;
+
+      case Constants.MODE_REQUEST: {
+        burstePressed = false;
+        requestPressed = true;
+        pollingPressed = false;
+        offlinePressed = false;
+      }
+      break;
+
+      case Constants.MODE_POLLING: {
+        burstePressed = false;
+        requestPressed = false;
+        pollingPressed = true;
+        offlinePressed = false;
+      }
+      break;
+
+      case Constants.MODE_OFFLINE: {
+        burstePressed = false;
+        requestPressed = false;
+        pollingPressed = false;
+        offlinePressed = true;
+      }
+      break;
+
+      default: {
+        burstePressed = false;
+        requestPressed = false;
+        pollingPressed = false;
+        offlinePressed = false;
+      }
+      break;
+
+    }
+
+
   }
 }

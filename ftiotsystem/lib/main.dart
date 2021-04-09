@@ -53,6 +53,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -61,6 +62,7 @@ class _MyAppState extends State<MyApp> {
         fontFamily: 'Kanit',
         textTheme: TextTheme(
           caption: TextStyle(fontFamily: 'Kanit', fontSize:  14.0, fontWeight: FontWeight.w600, color: Colors.black.withOpacity(0.6),),
+          headline4: TextStyle(fontFamily: 'Kanit', fontSize:  16.0, fontWeight: FontWeight.w400, color: Colors.black.withOpacity(0.4),),
           subtitle1: TextStyle(fontFamily: 'Kanit', fontSize:  12.0, fontWeight: FontWeight.w300, color: Colors.grey.withOpacity(0.6),),
           subtitle2: TextStyle(fontFamily: 'Kanit', fontSize:  12.0, fontWeight: FontWeight.w600, color: Colors.lightGreen,),
           headline1: TextStyle(fontSize:  36.0, fontWeight: FontWeight.bold),

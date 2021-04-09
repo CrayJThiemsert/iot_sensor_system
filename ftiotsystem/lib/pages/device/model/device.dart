@@ -8,6 +8,7 @@ class Device extends Item{
   final String uid;
   final int index;
   final String name;
+  final String mode;
   // List<Header> headers;
   // List<ItemData> itemDatas;
   // Topic topic;
@@ -17,12 +18,14 @@ class Device extends Item{
     String uid,
     int index = 0,
     String name = '',
+    String mode = '',
     // List<Header> headers,
     // List<ItemData> itemDatas,
     // Topic topic,
   })
     : this.index = index ?? 0,
       this.name = name ?? '',
+      this.mode = mode ?? '',
       this.id = id ?? '',
       this.uid = uid ?? ''
       // this.headers = headers,
@@ -35,6 +38,7 @@ class Device extends Item{
     String uid,
     int index,
     String name,
+    String mode,
     // List<Header> headers,
     // List<ItemData> itemDatas,
     // Topic topic,
@@ -44,6 +48,7 @@ class Device extends Item{
       uid: uid ?? this.uid,
       index: index ?? this.index,
       name: name ?? this.name,
+      mode: mode ?? this.mode,
       // headers: headers ?? this.headers,
       // itemDatas: itemDatas ?? this.itemDatas,
       // topic: topic ?? this.topic,
@@ -52,7 +57,7 @@ class Device extends Item{
 
   @override
   int get hashCode =>
-      id.hashCode ^ uid.hashCode ^ index.hashCode ^ name.hashCode; // ^ topic.hashCode;
+      id.hashCode ^ uid.hashCode ^ index.hashCode ^ name.hashCode ^ mode.hashCode; // ^ topic.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -62,6 +67,7 @@ class Device extends Item{
         id == other.id &&
         uid == other.uid &&
         index == other.index &&
+        mode == other.mode &&
         name == other.name; // &&
         // headers == other.headers &&
         // itemDatas == other.itemDatas &&
@@ -69,7 +75,7 @@ class Device extends Item{
 
   @override
   String toString() {
-    return 'Device { id: $id, uid: $uid, index: $index, name: $name}'; //, headers: $headers, itemDatas: ${itemDatas}, topic: ${topic} }';
+    return 'Device { id: $id, uid: $uid, index: $index, name: $name, mode: $mode}'; //, headers: $headers, itemDatas: ${itemDatas}, topic: ${topic} }';
   }
 
   ItemEntity toEntity() {

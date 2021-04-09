@@ -56,34 +56,9 @@ class _ChooseNetworkPageState extends State<ChooseNetworkPage> with AfterLayoutM
 
   Widget itemSSID(index) {
     if (index == 0) {
+      final TextStyle captionStyle = Theme.of(context).textTheme.headline4;
       return Column(
         children: [
-          // Row(
-          //   children: <Widget>[
-          //     ElevatedButton(
-          //       child: Text('ssid'),
-          //       onPressed: _getWifiName,
-          //     ),
-          //     Offstage(
-          //       offstage: level == 0,
-          //       child: Image.asset(level == 0 ? 'images/wifi1.png' : 'images/wifi$level.png', width: 28, height: 21),
-          //     ),
-          //     Text(_wifiName,
-          //       textAlign: TextAlign.left,
-          //     ),
-          //   ],
-          // ),
-          // Row(
-          //   children: <Widget>[
-          //     ElevatedButton(
-          //       child: Text('ip'),
-          //       onPressed: _getIP,
-          //     ),
-          //     Text(_ip,
-          //       textAlign: TextAlign.left,
-          //     ),
-          //   ],
-          // ),
           TextField(
             decoration: InputDecoration(
               border: UnderlineInputBorder(),
@@ -92,6 +67,7 @@ class _ChooseNetworkPageState extends State<ChooseNetworkPage> with AfterLayoutM
               hintText: 'Your wifi ssid',
               labelText: 'ssid',
             ),
+            style: captionStyle,
             keyboardType: TextInputType.text,
             controller: _ssidController,
             onChanged: (value) {
@@ -106,6 +82,7 @@ class _ChooseNetworkPageState extends State<ChooseNetworkPage> with AfterLayoutM
               hintText: 'Your wifi password',
               labelText: 'password',
             ),
+            style: captionStyle,
             keyboardType: TextInputType.text,
             onChanged: (value) {
               password = value;

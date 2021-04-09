@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:ftiotsystem/pages/device/entity/item_entity.dart';
 import 'package:ftiotsystem/pages/device/model/device.dart';
+import 'package:ftiotsystem/utils/constants.dart';
 
 class DevicesList extends StatefulWidget {
   @override
@@ -16,17 +17,6 @@ class _DevicesListState extends State<DevicesList> {
   // List<Map<dynamic, String>> lists = [];
   List<String> lists = [];
   List<Device> deviceLists = [];
-  List<String> images = [
-    "assets/Apples.png",
-    "assets/Bananas.png",
-    "assets/Cherries.png",
-    "assets/Grapes.png",
-    "assets/Oranges.png",
-    "assets/Peaches.png",
-    "assets/Plumbs.png",
-    "assets/Rasberries.png",
-    "assets/Strawberries.png",
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +39,7 @@ class _DevicesListState extends State<DevicesList> {
                   // index: int.parse(values['index'].toString() ?? '-1'),
                   index: int.parse('${values['index'] ?? "0"}'),
                   name: values['name'],
+                  mode: values['mode'] ?? Constants.MODE_BURST,
                 ));
               });
 
@@ -124,6 +115,8 @@ class _DeviceCardState extends State<DeviceCard> {
                   style: nameStyle,
                 ),
                 Text('${widget.device.uid}', style: subtitleStyle, textAlign: TextAlign.center,),
+                Text('${widget.device.mode}', style: subtitleStyle, textAlign: TextAlign.center,),
+
               ],
             ),
           ),

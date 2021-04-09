@@ -64,6 +64,7 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
   }
 
   Widget itemSSID(index) {
+    final TextStyle captionStyle = Theme.of(context).textTheme.headline4;
     if (index == 0) {
       return Column(
         children: [
@@ -97,10 +98,11 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
             decoration: InputDecoration(
               border: UnderlineInputBorder(),
               filled: true,
-              icon: Icon(Icons.wifi),
+              icon: Icon(Icons.network_check),
               hintText: 'Your selected device network',
               labelText: 'selected device network',
             ),
+            style: captionStyle,
             enabled: false,
             controller: _ssidController,
             onChanged: (value) {
@@ -111,10 +113,11 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
             decoration: InputDecoration(
               border: UnderlineInputBorder(),
               filled: true,
-              icon: Icon(Icons.lock_outline),
+              icon: Icon(Icons.title),
               hintText: 'Your device name',
               labelText: 'device name',
             ),
+            style: captionStyle,
             keyboardType: TextInputType.text,
             controller: _deviceNameController,
             onTap: () {
@@ -129,22 +132,22 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
               globals.g_device_name = _deviceName;
             },
           ),
-          TextField(
-            decoration: InputDecoration(
-              border: UnderlineInputBorder(),
-              filled: true,
-              icon: Icon(Icons.lock_outline),
-              hintText: 'Your wifi password',
-              labelText: 'password',
-            ),
-            keyboardType: TextInputType.text,
-            controller: _passwordController,
-            onChanged: (value) {
-              password = value;
-              _password = password;
-              globals.g_internet_password = _password;
-            },
-          ),
+          // TextField(
+          //   decoration: InputDecoration(
+          //     border: UnderlineInputBorder(),
+          //     filled: true,
+          //     icon: Icon(Icons.lock_outline),
+          //     hintText: 'Your wifi password',
+          //     labelText: 'password',
+          //   ),
+          //   keyboardType: TextInputType.text,
+          //   controller: _passwordController,
+          //   onChanged: (value) {
+          //     password = value;
+          //     _password = password;
+          //     globals.g_internet_password = _password;
+          //   },
+          // ),
           ElevatedButton(
             child: Text('Choose a device...'),
             onPressed: () {
@@ -201,6 +204,9 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
   void dispose() {
     // widget.channel.close();
     super.dispose();
+    _ssidController.dispose();
+    _deviceNameController.dispose();
+    _passwordController.dispose();
   }
 
   void loadData() async {
