@@ -2,7 +2,7 @@
     package="com.cray.ftiotsystem">
     <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="ftiotsystem"
+        android:label="Iot theApp"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
