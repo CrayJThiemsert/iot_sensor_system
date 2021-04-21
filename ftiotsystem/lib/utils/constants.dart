@@ -14,6 +14,12 @@ class Constants extends InheritedWidget {
   static const MODE_REQUEST = "request";
   static const MODE_OFFLINE = "offline";
 
+  // static const xx = TextStyle(
+  //   color: Colors.white,
+  //   fontFamily: 'Kanit',
+  //   fontWeight: FontWeight.w300,
+  //   fontSize: 12.0,
+  // );
   @override
   bool updateShouldNotify(Constants oldWidget) => false;
 }

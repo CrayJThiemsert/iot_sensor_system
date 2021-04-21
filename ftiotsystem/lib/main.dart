@@ -61,11 +61,20 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
         fontFamily: 'Kanit',
         textTheme: TextTheme(
-          caption: TextStyle(fontFamily: 'Kanit', fontSize:  14.0, fontWeight: FontWeight.w600, color: Colors.black.withOpacity(0.6),),
-          headline4: TextStyle(fontFamily: 'Kanit', fontSize:  16.0, fontWeight: FontWeight.w400, color: Colors.black.withOpacity(0.4),),
-          subtitle1: TextStyle(fontFamily: 'Kanit', fontSize:  12.0, fontWeight: FontWeight.w300, color: Colors.grey.withOpacity(0.6),),
-          subtitle2: TextStyle(fontFamily: 'Kanit', fontSize:  12.0, fontWeight: FontWeight.w600, color: Colors.lightGreen,),
-          headline1: TextStyle(fontSize:  36.0, fontWeight: FontWeight.bold),
+
+          
+          caption: TextStyle(fontFamily: 'Kanit', fontSize: 14.0, fontWeight: FontWeight.w600, color: Colors.black.withOpacity(0.6),),
+
+
+          subtitle1: TextStyle(fontFamily: 'Kanit', fontSize: 12.0, fontWeight: FontWeight.w300, color: Colors.grey.withOpacity(0.6),),
+          subtitle2: TextStyle(fontFamily: 'Kanit', fontSize: 12.0, fontWeight: FontWeight.w600, color: Colors.lightGreen,),
+
+          headline1: TextStyle(fontFamily: 'Kanit', fontSize: 36.0, fontWeight: FontWeight.w300, color: Colors.white,),
+          headline2: TextStyle(fontFamily: 'Kanit', fontSize: 12.0, fontWeight: FontWeight.w300, color: Colors.white,),
+          headline4: TextStyle(fontFamily: 'Kanit', fontSize: 16.0, fontWeight: FontWeight.w400, color: Colors.black.withOpacity(0.4),),
+
+          headline5: TextStyle(fontFamily: 'Kanit', fontSize: 28.0, fontWeight: FontWeight.w300, color: Colors.grey.withOpacity(0.6),),
+          headline6: TextStyle(fontFamily: 'Kanit', fontSize: 28.0, fontWeight: FontWeight.w600, color: Colors.lightGreen,),
         ),
       ),
       home: SplashScreen.navigate(

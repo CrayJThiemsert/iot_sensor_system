@@ -23,6 +23,16 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
   User user = User(uid: 'cray');
   DeviceDatabase deviceDatabase;
 
+  bool sec10Pressed = false;
+  bool sec30Pressed = false;
+  bool min1Pressed = false;
+  bool min5Pressed = false;
+  bool min30Pressed = false;
+  bool hour1Pressed = false;
+  bool hour2Pressed = false;
+  bool hour3Pressed = false;
+  bool hour4Pressed = false;
+
   bool burstePressed = false;
   bool requestPressed = false;
   bool pollingPressed = false;
@@ -59,6 +69,8 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
         .orderByKey()
         .limitToLast(1);
     // var deviceRef = FirebaseDatabase.instance.reference().child('users/${user.uid}/devices/${device.uid}/${device.uid}_history/2021-03-31 01:32:01');
+    final TextStyle unitStyle = Theme.of(context).textTheme.headline2;
+    final TextStyle headlineStyle = Theme.of(context).textTheme.headline1;
 
     return StreamBuilder(
         // stream: deviceDatabase.getLatestHistory().onValue,
@@ -95,23 +107,19 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                                 Container(
                                   child: Text(
                                     '${weatherHistory.weatherData.temperature}',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Kanit',
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: 36.0,
-                                    ),
+                                    style: headlineStyle,
+                                    // style: TextStyle(
+                                    //   color: Colors.white,
+                                    //   fontFamily: 'Kanit',
+                                    //   fontWeight: FontWeight.w300,
+                                    //   fontSize: 36.0,
+                                    // ),
                                   ),
                                 ),
                                 Container(
                                   child: Text(
                                     'Temperature (\u2103)',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Kanit',
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: 12.0,
-                                    ),
+                                    style: unitStyle,
                                   ),
                                 ),
                               ],
@@ -130,23 +138,25 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                                 Container(
                                   child: Text(
                                     '${weatherHistory.weatherData.humidity}',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Kanit',
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: 36.0,
-                                    ),
+                                    style: headlineStyle,
+                                    // style: TextStyle(
+                                    //   color: Colors.white,
+                                    //   fontFamily: 'Kanit',
+                                    //   fontWeight: FontWeight.w300,
+                                    //   fontSize: 36.0,
+                                    // ),
                                   ),
                                 ),
                                 Container(
                                   child: Text(
                                     'Humidity (%)',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Kanit',
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: 12.0,
-                                    ),
+                                    style: unitStyle,
+                                    // style: TextStyle(
+                                    //   color: Colors.white,
+                                    //   fontFamily: 'Kanit',
+                                    //   fontWeight: FontWeight.w300,
+                                    //   fontSize: 12.0,
+                                    // ),
                                   ),
                                 ),
                               ],
@@ -167,101 +177,7 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                       child: Text('latest when ${weatherHistory.weatherData.uid ?? 'no data'}'),
                     ),
                   ),
-                  Card(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            child: Column(
-                              children: [
-                                IconButton(
-                                  color: burstePressed ? Colors.lightGreen : Colors.grey,
-                                  icon: const Icon(Icons.autorenew),
-                                  tooltip: 'Continue read sensor value every short time period',
-                                  onPressed: () {
-                                    setState(() {
-                                      burstePressed = !burstePressed;
-                                      requestPressed = false;
-                                      pollingPressed = false;
-                                      offlinePressed = false;
-                                    });
-                                  },
-                                ),
-                                Text('Burst', style: burstePressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
-                              ],
-                            ),
-
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            child: Column(
-                              children: [
-                                IconButton(
-                                  color: requestPressed ? Colors.lightGreen : Colors.grey,
-                                  icon: const Icon(Icons.wifi_calling),
-                                  tooltip: 'Read sensor by request',
-                                  onPressed: () {
-                                    setState(() {
-                                      burstePressed = false;
-                                      requestPressed = !requestPressed;
-                                      pollingPressed = false;
-                                      offlinePressed = false;
-                                    });
-                                  },
-                                ),
-                                Text('Request', style: requestPressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            child: Column(
-                              children: [
-                                IconButton(
-                                  color: pollingPressed ? Colors.lightGreen : Colors.grey,
-                                  icon: const Icon(Icons.battery_alert),
-                                  tooltip: 'Read sensor value every long time period to safe battery life time',
-                                  onPressed: () {
-                                    setState(() {
-                                      burstePressed = false;
-                                      requestPressed = false;
-                                      pollingPressed = !pollingPressed;
-                                      offlinePressed = false;
-                                    });
-                                  },
-                                ),
-                                Text('Polling', style: pollingPressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            child: Column(
-                              children: [
-                                IconButton(
-                                  color: offlinePressed ? Colors.lightGreen : Colors.grey,
-                                  icon: const Icon(Icons.wifi_off),
-                                  tooltip: 'Save read sensor value in "the Node" local memory',
-                                  onPressed: () {
-                                    setState(() {
-                                      burstePressed = false;
-                                      requestPressed = false;
-                                      pollingPressed = false;
-                                      offlinePressed = !offlinePressed;
-                                    });
-                                  },
-                                ),
-                                Text('Offline', style: offlinePressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  buildReadingIntervalCard(context),
                 ],
               ),
             );
@@ -280,6 +196,341 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
             );
           }
         });
+  }
+
+  Card buildWorkingModeCard(BuildContext context) {
+    return Card(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          child: Column(
+                            children: [
+                              IconButton(
+                                color: burstePressed ? Colors.lightGreen : Colors.grey,
+                                icon: const Icon(Icons.autorenew),
+                                tooltip: 'Continue read sensor value every short time period',
+                                onPressed: () {
+                                  setState(() {
+                                    burstePressed = !burstePressed;
+                                    requestPressed = false;
+                                    pollingPressed = false;
+                                    offlinePressed = false;
+                                  });
+                                },
+                              ),
+                              Text('Burst', style: burstePressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
+                            ],
+                          ),
+
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: Column(
+                            children: [
+                              IconButton(
+                                color: requestPressed ? Colors.lightGreen : Colors.grey,
+                                icon: const Icon(Icons.wifi_calling),
+                                tooltip: 'Read sensor by request',
+                                onPressed: () {
+                                  setState(() {
+                                    burstePressed = false;
+                                    requestPressed = !requestPressed;
+                                    pollingPressed = false;
+                                    offlinePressed = false;
+                                  });
+                                },
+                              ),
+                              Text('Request', style: requestPressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: Column(
+                            children: [
+                              IconButton(
+                                color: pollingPressed ? Colors.lightGreen : Colors.grey,
+                                icon: const Icon(Icons.battery_alert),
+                                tooltip: 'Read sensor value every long time period to safe battery life time',
+                                onPressed: () {
+                                  setState(() {
+                                    burstePressed = false;
+                                    requestPressed = false;
+                                    pollingPressed = !pollingPressed;
+                                    offlinePressed = false;
+                                  });
+                                },
+                              ),
+                              Text('Polling', style: pollingPressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: Column(
+                            children: [
+                              IconButton(
+                                color: offlinePressed ? Colors.lightGreen : Colors.grey,
+                                icon: const Icon(Icons.wifi_off),
+                                tooltip: 'Save read sensor value in "the Node" local memory',
+                                onPressed: () {
+                                  setState(() {
+                                    burstePressed = false;
+                                    requestPressed = false;
+                                    pollingPressed = false;
+                                    offlinePressed = !offlinePressed;
+                                  });
+                                },
+                              ),
+                              Text('Offline', style: offlinePressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+  }
+
+  Card buildReadingIntervalCard(BuildContext context) {
+    final TextStyle inactiveStyle = Theme.of(context).textTheme.headline5;
+    final TextStyle activeStyle = Theme.of(context).textTheme.headline6;
+    return Card(
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                    setState(() {
+                      sec10Pressed = !sec10Pressed;
+                      sec30Pressed = false;
+                      min1Pressed = false;
+                      min5Pressed = false;
+                      min30Pressed = false;
+                      hour1Pressed = false;
+                      hour2Pressed = false;
+                      hour3Pressed = false;
+                      hour4Pressed = false;
+                    });
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Text('10', style: sec10Pressed ? activeStyle : inactiveStyle,),
+                    Text('sec', style: sec10Pressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  sec10Pressed = false;
+                  sec30Pressed = !sec30Pressed;
+                  min1Pressed = false;
+                  min5Pressed = false;
+                  min30Pressed = false;
+                  hour1Pressed = false;
+                  hour2Pressed = false;
+                  hour3Pressed = false;
+                  hour4Pressed = false;
+                });
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Text('30', style: sec30Pressed ? activeStyle : inactiveStyle,),
+                    Text('sec', style: sec30Pressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  sec10Pressed = false;
+                  sec30Pressed = false;
+                  min1Pressed = !min1Pressed;
+                  min5Pressed = false;
+                  min30Pressed = false;
+                  hour1Pressed = false;
+                  hour2Pressed = false;
+                  hour3Pressed = false;
+                  hour4Pressed = false;
+                });
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Text('1', style: min1Pressed ? activeStyle : inactiveStyle,),
+                    Text('min', style: min1Pressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  sec10Pressed = false;
+                  sec30Pressed = false;
+                  min1Pressed = false;
+                  min5Pressed = !min5Pressed;
+                  min30Pressed = false;
+                  hour1Pressed = false;
+                  hour2Pressed = false;
+                  hour3Pressed = false;
+                  hour4Pressed = false;
+                });
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Text('5', style: min5Pressed ? activeStyle : inactiveStyle,),
+                    Text('min', style: min5Pressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  sec10Pressed = false;
+                  sec30Pressed = false;
+                  min1Pressed = false;
+                  min5Pressed = false;
+                  min30Pressed = !min30Pressed;
+                  hour1Pressed = false;
+                  hour2Pressed = false;
+                  hour3Pressed = false;
+                  hour4Pressed = false;
+                });
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Text('30', style: min30Pressed ? activeStyle : inactiveStyle,),
+                    Text('min', style: min30Pressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  sec10Pressed = false;
+                  sec30Pressed = false;
+                  min1Pressed = false;
+                  min5Pressed = false;
+                  min30Pressed = false;
+                  hour1Pressed = !hour1Pressed;
+                  hour2Pressed = false;
+                  hour3Pressed = false;
+                  hour4Pressed = false;
+                });
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Text('1', style: hour1Pressed ? activeStyle : inactiveStyle,),
+                    Text('hour', style: hour1Pressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  sec10Pressed = false;
+                  sec30Pressed = false;
+                  min1Pressed = false;
+                  min5Pressed = false;
+                  min30Pressed = false;
+                  hour1Pressed = false;
+                  hour2Pressed = !hour2Pressed;
+                  hour3Pressed = false;
+                  hour4Pressed = false;
+                });
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Text('2', style: hour2Pressed ? activeStyle : inactiveStyle,),
+                    Text('hour', style: hour2Pressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  sec10Pressed = false;
+                  sec30Pressed = false;
+                  min1Pressed = false;
+                  min5Pressed = false;
+                  min30Pressed = false;
+                  hour1Pressed = false;
+                  hour2Pressed = false;
+                  hour3Pressed = !hour3Pressed;
+                  hour4Pressed = false;
+                });
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Text('3', style: hour3Pressed ? activeStyle : inactiveStyle,),
+                    Text('hour', style: hour3Pressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  sec10Pressed = false;
+                  sec30Pressed = false;
+                  min1Pressed = false;
+                  min5Pressed = false;
+                  min30Pressed = false;
+                  hour1Pressed = false;
+                  hour2Pressed = false;
+                  hour3Pressed = false;
+                  hour4Pressed = !hour4Pressed;
+                });
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Text('4', style: hour4Pressed ? activeStyle : inactiveStyle,),
+                    Text('hour', style: hour4Pressed ? Theme.of(context).textTheme.subtitle2 : Theme.of(context).textTheme.subtitle1,),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+        ],
+      ),
+    );
   }
 
   @override
