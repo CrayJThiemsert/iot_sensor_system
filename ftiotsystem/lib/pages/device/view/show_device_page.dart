@@ -300,6 +300,7 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
   }
 
   Card buildReadingIntervalCard(BuildContext context) {
+    // draw card
     final TextStyle inactiveStyle = Theme.of(context).textTheme.headline5;
     final TextStyle activeStyle = Theme.of(context).textTheme.headline6;
     return Card(

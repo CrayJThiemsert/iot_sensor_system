@@ -63,6 +63,7 @@ DHT dht(DHTPIN, DHTTYPE);
 // ======================================================================
 #define FIREBASE_HOST "asset-management-lff.firebaseio.com"
 #define FIREBASE_AUTH "tyPYNCdjHQREFNsW46sha4JhOFG4WG4U7pL8iShx"
+#define DEFAULT_READING_INTERVAL "10000"
 // ======================================================================
 // Set to true to reset eeprom before to write something
 #define RESET_EEPROM true
@@ -86,7 +87,7 @@ float gTemperature = 0;
 float gHumidity = 0;
 String gMacAddress = "";
 String gDeviceName = "";
-String gDeviceReadingInterval = "";
+String gDeviceReadingInterval = DEFAULT_READING_INTERVAL;
 String gDeviceLocalIp = "";
 
 // Function Decalration
@@ -207,29 +208,30 @@ void setup() {
 }
 void loop() {
 //  Serial.println("+");
-  server.handleClient();
-  MDNS.update();
-  /*
+//  server.handleClient();
+//  MDNS.update();
+  
   // Monitor press reset button
-  long ledTIme=0;
+//  long ledTIme=0;
   // calculate elapsedTime
    long elapsedTime = millis() - lastTime;
    lastTime = lastTime + elapsedTime;
-   Serial.print("main loop: lastTime=");
-   Serial.println(lastTime);
+//   Serial.print("main loop: lastTime=");
+//   Serial.println(lastTime);
 
    blinkLEDOnce(elapsedTime); // blink once every 1 second
   
-  // do normal task because intect board have no reset button switch setup. 07-apr-2021 11:50
-  Serial.println("do normal task because intect board have no reset button switch setup. 07-apr-2021 11:50");
+  
+//  Serial.println("do normal task because intec board have no reset button switch setup. 07-apr-2021 11:50");
   long normalProcessElapsedTime = millis() - lastTime;
   lastTime = lastTime + normalProcessElapsedTime;
-  Serial.print("normal process: normalProcessLastTime=");
-  Serial.println(lastTime);
+//  Serial.print("normal process: normalProcessLastTime=");
+//  Serial.println(lastTime);
   processNormalTasks(normalProcessElapsedTime);
 
-  listenResetButton(elapsedTime);
-  */
+  // do normal task because intect board have no reset button switch setup. 07-apr-2021 11:50
+//  listenResetButton(elapsedTime);
+  
 }
 
 bool loadInternalConfig() {
@@ -307,6 +309,11 @@ bool loadInternalConfig() {
   Serial.print("READING INTERVAL: ");
   Serial.println(einterval);
   gDeviceReadingInterval = einterval;
+  if(gDeviceReadingInterval == "") {
+    gDeviceReadingInterval = DEFAULT_READING_INTERVAL;
+    Serial.print("empty READING INTERVAL then use default: ");
+    Serial.println(gDeviceReadingInterval);
+  }
   
   return result;
 }
@@ -325,12 +332,17 @@ void processNormalTasks(long elapsedMS) {
 
     static long ledTime = 0;  // static define value once only
     ledTime = ledTime + elapsedMS;
-    Serial.print("normal ledTime=");
-    Serial.println(ledTime);
-    Serial.print("normal BurstModeInterval=");
-    Serial.println(BurstModeInterval);
+//    Serial.print("normal ledTime=");
+//    Serial.println(ledTime);
+//    Serial.print("normal BurstModeInterval=");
+//    Serial.println(BurstModeInterval);
+    long readingInterval = strtol(gDeviceReadingInterval.c_str(), NULL, 0 );
+//    Serial.print("readingInterval=");
+//    Serial.println(readingInterval);
    
-    if(ledTime >= BurstModeInterval) {
+//    if(ledTime >= BurstModeInterval) {
+    if(ledTime >= readingInterval) {
+      
 //      ledState = !ledState;
       Serial.println("doing read sensor...");
       if(readSensor()) {
@@ -347,17 +359,18 @@ void processNormalTasks(long elapsedMS) {
         Serial.println("Read sensor Failured!!!");
       }
 
-      ledTime = ledTime - BurstModeInterval;
+//      ledTime = ledTime - BurstModeInterval;
+      ledTime = ledTime - readingInterval;
         
     } else  {
-      Serial.println("not reach interval time yet!!!");
+//      Serial.println("not reach interval time yet!!!");
     }
     
   }
 }
 
 
-//----------------------------------------------- Fuctions used for WiFi credentials saving and connecting to it which you do not need to change 
+//----------------------------------------------- Functions used for WiFi credentials saving and connecting to it which you do not need to change 
 bool testWifi(void) {
   int c = 0;
   Serial.println("Waiting for Wifi to connect");
@@ -747,13 +760,7 @@ bool saveDataToCloudDatabase(void) {
 
     // Create the new sensor values node
     Firebase.set(nodeString, sensorValues); 
-
-    // handle error
-    if (Firebase.failed()) {
-        Serial.print("setting /node data failed:");
-        Serial.println(Firebase.error());  
-        return false;
-    }
+    
     Serial.print("uid=");
     Serial.println(gCurrentDateTimeString);
     Serial.print("deviceId=");
@@ -763,6 +770,14 @@ bool saveDataToCloudDatabase(void) {
     Serial.print(" % temperature: ");
     Serial.print(gTemperature);
     Serial.println(" Celsius");
+
+    // handle error
+    if (Firebase.failed()) {
+        Serial.print("setting /node data failed:");
+        Serial.println(Firebase.error());  
+        return false;
+    }
+    delay(1000);
 
     Serial.println("");
     Serial.println("saveDataToCloudDatabase() Finished");
@@ -806,6 +821,15 @@ bool createDeviceDataToCloudDatabase(void) {
     String nodeString = "users/cray/devices/" + gMacAddress;
     Serial.print("nodeString=");
     Serial.println(nodeString);
+    
+    Serial.print("uid=");
+    Serial.println(gCurrentDateTimeString);
+    Serial.print("deviceId=");
+    Serial.println(gMacAddress);
+    Serial.print("name: ");
+    Serial.println(gDeviceName);
+    Serial.print("localip: ");
+    Serial.println(gDeviceLocalIp);
 
     // Create the new sensor values node
     Firebase.set(nodeString, deviceValues); 
@@ -816,14 +840,7 @@ bool createDeviceDataToCloudDatabase(void) {
         Serial.println(Firebase.error());  
         return false;
     }
-    Serial.print("uid=");
-    Serial.println(gCurrentDateTimeString);
-    Serial.print("deviceId=");
-    Serial.println(gMacAddress);
-    Serial.print("name: ");
-    Serial.println(gDeviceName);
-    Serial.print("localip: ");
-    Serial.println(gDeviceLocalIp);
+    delay(1000);
     
     Serial.println("");
     Serial.println("createDeviceDataToCloudDatabase() Finished");
@@ -991,6 +1008,10 @@ void blinkLEDOnce(long elapsedMS) {
     ledState = !ledState;
     digitalWrite(D0_LED_BUILTIN,ledState);   
     ledTime = ledTime - interval;
+
+    // listen local webserver every 1 seconds
+    server.handleClient();
+    MDNS.update();
   }
 }
 
@@ -1047,3 +1068,8 @@ bool resetManufacturingMode(void){
   
   return true;
 }
+
+//long String::toInt(void) const {
+//    if (buffer) return atol(buffer);
+//    return 0;
+//}
