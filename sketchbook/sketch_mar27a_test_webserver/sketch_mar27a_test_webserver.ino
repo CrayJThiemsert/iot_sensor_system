@@ -13,6 +13,7 @@
 #endif
 
 const char* host = "esp8266-webupdate";
+const String hoststr = "esp8266-str";
 const char* ssid = STASSID;
 const char* password = STAPSK;
 
@@ -26,7 +27,8 @@ void setup(void) {
   WiFi.mode(WIFI_AP_STA);
   WiFi.begin(ssid, password);
   if (WiFi.waitForConnectResult() == WL_CONNECTED) {
-    MDNS.begin(host);
+//    MDNS.begin(host);
+    MDNS.begin(hoststr);
 
     Serial.print("Local IP: ");
     Serial.println(WiFi.localIP());
@@ -67,7 +69,10 @@ void setup(void) {
     server.begin();
     MDNS.addService("http", "tcp", 80);
 
-    Serial.printf("Ready! Open http://%s.local in your browser\n", host);
+//    Serial.printf("Ready! Open http://%s.local in your browser\n", host);
+    Serial.print("Ready! Open http://");
+    Serial.print(hoststr);
+    Serial.println(".local in your browser\n");
   } else {
     Serial.println("WiFi Failed");
   }

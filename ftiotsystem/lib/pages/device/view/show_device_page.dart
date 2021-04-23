@@ -7,6 +7,9 @@ import 'package:ftiotsystem/pages/device/model/weather_history.dart';
 import 'package:ftiotsystem/pages/user/model/user.dart';
 import 'package:ftiotsystem/utils/constants.dart';
 
+import 'package:http/http.dart' as http;
+import 'package:ftiotsystem/globals.dart' as globals;
+
 class ShowDevicePage extends StatefulWidget {
   String deviceUid;
   Device device;
@@ -38,6 +41,8 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
   bool pollingPressed = false;
   bool offlinePressed = false;
 
+  int selectedInterval = 5000; // milliseconds
+
   _ShowDevicePageState(String deviceUid, Device device)
       : this.deviceUid = deviceUid,
         this.device = device;
@@ -57,8 +62,6 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
     super.dispose();
     deviceDatabase.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +109,7 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                                 SizedBox(height: 50,),
                                 Container(
                                   child: Text(
-                                    '${weatherHistory.weatherData.temperature}',
+                                    '${weatherHistory?.weatherData?.temperature ?? ''}',
                                     style: headlineStyle,
                                     // style: TextStyle(
                                     //   color: Colors.white,
@@ -137,7 +140,7 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                                 SizedBox(height: 50,),
                                 Container(
                                   child: Text(
-                                    '${weatherHistory.weatherData.humidity}',
+                                    '${weatherHistory?.weatherData?.humidity ?? ''}',
                                     style: headlineStyle,
                                     // style: TextStyle(
                                     //   color: Colors.white,
@@ -174,7 +177,7 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                   ),
                   Center(
                     child: Container(
-                      child: Text('latest when ${weatherHistory.weatherData.uid ?? 'no data'}'),
+                      child: Text('latest when ${weatherHistory?.weatherData?.uid ?? 'no data'}'),
                     ),
                   ),
                   buildReadingIntervalCard(context),
@@ -315,6 +318,9 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                       hour2Pressed = false;
                       hour3Pressed = false;
                       hour4Pressed = false;
+
+                      selectedInterval = 10000;
+                      updateReadingInterval();
                     });
               },
               child: Container(
@@ -340,6 +346,9 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                   hour2Pressed = false;
                   hour3Pressed = false;
                   hour4Pressed = false;
+
+                  selectedInterval = 30000;
+                  updateReadingInterval();
                 });
               },
               child: Container(
@@ -365,6 +374,9 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                   hour2Pressed = false;
                   hour3Pressed = false;
                   hour4Pressed = false;
+
+                  selectedInterval = 60000;
+                  updateReadingInterval();
                 });
               },
               child: Container(
@@ -390,6 +402,9 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                   hour2Pressed = false;
                   hour3Pressed = false;
                   hour4Pressed = false;
+
+                  selectedInterval = 300000;
+                  updateReadingInterval();
                 });
               },
               child: Container(
@@ -415,6 +430,9 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                   hour2Pressed = false;
                   hour3Pressed = false;
                   hour4Pressed = false;
+
+                  selectedInterval = 1800000;
+                  updateReadingInterval();
                 });
               },
               child: Container(
@@ -440,6 +458,9 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                   hour2Pressed = false;
                   hour3Pressed = false;
                   hour4Pressed = false;
+
+                  selectedInterval = 3600000;
+                  updateReadingInterval();
                 });
               },
               child: Container(
@@ -465,6 +486,9 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                   hour2Pressed = !hour2Pressed;
                   hour3Pressed = false;
                   hour4Pressed = false;
+
+                  selectedInterval = 7200000;
+                  updateReadingInterval();
                 });
               },
               child: Container(
@@ -490,6 +514,9 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                   hour2Pressed = false;
                   hour3Pressed = !hour3Pressed;
                   hour4Pressed = false;
+
+                  selectedInterval = 10800000;
+                  updateReadingInterval();
                 });
               },
               child: Container(
@@ -515,6 +542,9 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                   hour2Pressed = false;
                   hour3Pressed = false;
                   hour4Pressed = !hour4Pressed;
+
+                  selectedInterval = 14400000;
+                  updateReadingInterval();
                 });
               },
               child: Container(
@@ -531,6 +561,38 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
         ],
       ),
     );
+  }
+
+  /**
+   * First contact to "the Node" to pass reading interval value
+   */
+  Future<http.Response> updateReadingInterval() async {
+    // Hostname on device detail page
+    String hostName = '';
+    String hostIp = '';
+    String macAddressWithoutColon = hostName = device.uid.replaceAll(':', '');
+    hostName = '${Constants.of(context).DEFAULT_THE_NODE_DNS}${macAddressWithoutColon.toLowerCase()}.local';
+    hostIp = '${device.localip}:80';
+    print('hostName=${hostName}');
+    print('host local ip address=${hostIp}');
+    print('Device reading interval[${selectedInterval}] - setting...');
+    var url =
+    // Uri.https('www.googleapis.com', '/books/v1/volumes', {'q': '{http}'});
+    //   Uri.http(hostName, '/setting', {'interval': selectedInterval.toString()});
+    // Change to use local ip address of each device to be send request to update device setting from "theApp".
+      Uri.http(hostIp, '/setting', {'interval': selectedInterval.toString()});
+
+    // Await the http get response, then decode the json-formatted response.
+    final response = await http.get(url);
+    print("status code =${response.statusCode}");
+    if (response.statusCode == 200) {
+      print('Device reading interval[${selectedInterval}] - setting is ok!!');
+    } else {
+      print('Device reading interval[${selectedInterval}] - setting is not ok!!');
+      throw Exception('Failed to do wifi settings');
+    }
+
+    return response;
   }
 
   @override
@@ -578,7 +640,5 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
       break;
 
     }
-
-
   }
 }

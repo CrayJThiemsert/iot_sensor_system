@@ -7,6 +7,7 @@ class Constants extends InheritedWidget {
 
   final String successMessage = 'Some message';
   final String DEFAULT_THE_NODE_IP = "192.168.1.199";
+  final String DEFAULT_THE_NODE_DNS = "thenode"; // thenode[macaddress] example is thenode84:CC:A8:88:6E:07
 
   static const MODE_BURST = "burst";
   static const MODE_POLLING = "polling";

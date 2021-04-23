@@ -40,6 +40,7 @@ class _DevicesListState extends State<DevicesList> {
                   index: int.parse('${values['index'] ?? "0"}'),
                   name: values['name'],
                   mode: values['mode'] ?? Constants.MODE_BURST,
+                  localip: values['localip'],
                 ));
               });
 
@@ -115,7 +116,8 @@ class _DeviceCardState extends State<DeviceCard> {
                   style: nameStyle,
                 ),
                 Text('${widget.device.uid}', style: subtitleStyle, textAlign: TextAlign.center,),
-                Text('${widget.device.mode}', style: subtitleStyle, textAlign: TextAlign.center,),
+                // Text('${widget.device.mode}', style: subtitleStyle, textAlign: TextAlign.center,),
+                Text('[${widget.device.localip}]', style: subtitleStyle, textAlign: TextAlign.center,),
 
               ],
             ),

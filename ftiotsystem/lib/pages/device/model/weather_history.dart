@@ -23,7 +23,7 @@ class WeatherHistory extends Equatable {
         weatherData: WeatherData.fromJson(json[key]),
       );
     } else {
-      print('json.isEmpty=${json.isEmpty}');
+      print('json.isEmpty=${json?.isEmpty ?? true}');
       return WeatherHistory();
     }
   }

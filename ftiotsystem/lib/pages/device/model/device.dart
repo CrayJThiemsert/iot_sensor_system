@@ -9,6 +9,7 @@ class Device extends Item{
   final int index;
   final String name;
   final String mode;
+  final String localip;
   // List<Header> headers;
   // List<ItemData> itemDatas;
   // Topic topic;
@@ -19,6 +20,7 @@ class Device extends Item{
     int index = 0,
     String name = '',
     String mode = '',
+    String localip = '',
     // List<Header> headers,
     // List<ItemData> itemDatas,
     // Topic topic,
@@ -26,6 +28,7 @@ class Device extends Item{
     : this.index = index ?? 0,
       this.name = name ?? '',
       this.mode = mode ?? '',
+      this.localip = localip ?? '',
       this.id = id ?? '',
       this.uid = uid ?? ''
       // this.headers = headers,
@@ -39,6 +42,7 @@ class Device extends Item{
     int index,
     String name,
     String mode,
+    String localip,
     // List<Header> headers,
     // List<ItemData> itemDatas,
     // Topic topic,
@@ -49,6 +53,7 @@ class Device extends Item{
       index: index ?? this.index,
       name: name ?? this.name,
       mode: mode ?? this.mode,
+      localip: localip ?? this.localip,
       // headers: headers ?? this.headers,
       // itemDatas: itemDatas ?? this.itemDatas,
       // topic: topic ?? this.topic,
@@ -57,7 +62,7 @@ class Device extends Item{
 
   @override
   int get hashCode =>
-      id.hashCode ^ uid.hashCode ^ index.hashCode ^ name.hashCode ^ mode.hashCode; // ^ topic.hashCode;
+      id.hashCode ^ uid.hashCode ^ index.hashCode ^ name.hashCode ^ mode.hashCode ^ localip.hashCode; // ^ topic.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -68,6 +73,7 @@ class Device extends Item{
         uid == other.uid &&
         index == other.index &&
         mode == other.mode &&
+        localip == other.localip &&
         name == other.name; // &&
         // headers == other.headers &&
         // itemDatas == other.itemDatas &&
@@ -75,7 +81,7 @@ class Device extends Item{
 
   @override
   String toString() {
-    return 'Device { id: $id, uid: $uid, index: $index, name: $name, mode: $mode}'; //, headers: $headers, itemDatas: ${itemDatas}, topic: ${topic} }';
+    return 'Device { id: $id, uid: $uid, index: $index, name: $name, mode: $mode, localip: $localip}'; //, headers: $headers, itemDatas: ${itemDatas}, topic: ${topic} }';
   }
 
   ItemEntity toEntity() {
