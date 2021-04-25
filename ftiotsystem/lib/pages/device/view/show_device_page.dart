@@ -58,7 +58,7 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
 
   @override
   void dispose() {
-    // Dispose database
+    // Dispose database.
     super.dispose();
     deviceDatabase.dispose();
   }

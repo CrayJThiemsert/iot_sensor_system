@@ -113,11 +113,17 @@ int gIsResetButtonPress = 0;
 int gResetCount = 0;
 
 // Multitask
-long interval = 1000;
+long led_interval = 1000;
 long BurstModeInterval = 10000; // 10 seconds
 long lastTime = millis();
 long normalProcessLastTime = millis();
 bool ledState=false;
+
+unsigned long previousMillis1 = 0;  //store last time LED1 was blinked
+//const long period1 = 1000;         // period at which led1 blinks in ms
+
+unsigned long previousMillis2 = 0;  //store last time LED2 was blinked
+//const long period2 = 200;             // period at which led1 blinks in ms
 
 //Establishing Local server at port 80 whenever required
 ESP8266WebServer server(80);
@@ -218,24 +224,143 @@ void loop() {
   // Monitor press reset button
 //  long ledTIme=0;
   // calculate elapsedTime
-   long elapsedTime = millis() - lastTime;
-   lastTime = lastTime + elapsedTime;
-//   Serial.print("main loop: lastTime=");
-//   Serial.println(lastTime);
+// -------------------------------------------------------------------- new structure     
+  unsigned long currentMillis = millis(); // store the current time
 
-   blinkLEDOnce(elapsedTime); // blink once every 1 second
-  
-  
-//  Serial.println("do normal task because intec board have no reset button switch setup. 07-apr-2021 11:50");
-  long normalProcessElapsedTime = millis() - lastTime;
-  lastTime = lastTime + normalProcessElapsedTime;
-//  Serial.print("normal process: normalProcessLastTime=");
-//  Serial.println(lastTime);
-  processNormalTasks(normalProcessElapsedTime);
+  blinkLEDTaskOnce(currentMillis);
 
-  // do normal task because intect board have no reset button switch setup. 07-apr-2021 11:50
-//  listenResetButton(elapsedTime);
+  processNormalTasksEngine(currentMillis);
+
+//// -------------------------------------------------------------------- old structure   
+//   long elapsedTime = millis() - lastTime;
+//   lastTime = lastTime + elapsedTime;
+////   Serial.print("main loop: lastTime=");
+////   Serial.println(lastTime);
+//
+////   blinkLEDOnce(elapsedTime); // blink once every 1 second
+//  
+//  
+////  Serial.println("do normal task because intec board have no reset button switch setup. 07-apr-2021 11:50");
+//  long normalProcessElapsedTime = millis() - lastTime;
+//  lastTime = lastTime + normalProcessElapsedTime;
+////  Serial.print("normal process: normalProcessLastTime=");
+////  Serial.println(lastTime);
+//  processNormalTasks(normalProcessElapsedTime);
+//
+//  // do normal task because intect board have no reset button switch setup. 07-apr-2021 11:50
+////  listenResetButton(elapsedTime);
   
+}
+
+void processNormalTasksEngine(unsigned long currentMillis) {
+//    static long ledTime = 0;  // static define value once only
+//    ledTime = ledTime + elapsedMS;
+
+//    Serial.print("normal BurstModeInterval=");
+//    Serial.println(BurstModeInterval);
+    
+   long readingInterval = strtol(gDeviceReadingInterval.c_str(), NULL, 0 );
+   if(readingInterval == 0) {
+//    readingInterval = (DEFAULT_READING_INTERVAL_LONG / 1000) * 60;
+    readingInterval = DEFAULT_READING_INTERVAL_LONG;
+   }
+//   } else {
+//    if(readingInterval > 60000) {
+//      // if over 1 minute, change the way to calculate
+//      readingInterval = (readingInterval / 60000) * 3600; // (convert millisecond to minutes) * 3600 to round
+//    } else if(readingInterval > 3600000){
+//      // if over 1 minute, change the way to calculate
+//      readingInterval = (readingInterval / 3600000) * 216000; // (convert millisecond to hours) * 216000 to round
+//    } else {
+//      readingInterval = (readingInterval / 1000) * 60;
+//    }
+//   }
+
+   if (currentMillis - previousMillis2 >= readingInterval) {    // check if gDeviceReadingInterval ms passed
+    previousMillis2 = currentMillis;   // save the last time you run normal process
+
+    if ((WiFi.status() == WL_CONNECTED))  {
+        Serial.println("");
+        Serial.print("gDeviceReadingInterval(millisecond)=");
+        Serial.println(gDeviceReadingInterval);
+        Serial.print("previousMillis2=");
+        Serial.println(previousMillis2);
+        Serial.print("currentMillis=");
+        Serial.println(currentMillis);
+        Serial.print("readingInterval=");
+        Serial.println(readingInterval);
+  
+        processReadSensor();
+  
+      }
+  }
+   
+////    if(ledTime >= BurstModeInterval) {
+////    10sec=10000ms=600
+////    1sec=1000ms=60
+////    5sec=5000ms=300
+////    readingInterval = 300; = 5sec
+//    if(ledTime >= readingInterval) {
+//      if ((WiFi.status() == WL_CONNECTED))  {
+//        Serial.println("");
+//        Serial.print("gDeviceReadingInterval(millisecond)=");
+//        Serial.println(gDeviceReadingInterval);
+//        Serial.print("elapsedMS=");
+//        Serial.println(elapsedMS);
+//        Serial.print("normal ledTime=");
+//        Serial.println(ledTime);
+//        Serial.print("readingInterval=");
+//        Serial.println(readingInterval);
+//  
+//        processReadSensor();
+//  
+//  //      ledTime = ledTime - BurstModeInterval;
+//        ledTime = ledTime - readingInterval;
+//      }
+//    } 
+//    } else  {
+//      Serial.print(".");
+////      if(elapsedMS == 1) {
+//////      Serial.println("not reach interval time yet!!!");
+////        Serial.print("normal ledTime=");
+////        Serial.println(ledTime);
+////        Serial.print("elapsedMS=");
+////        Serial.println(elapsedMS);
+////        Serial.println("");
+////      }
+//    }
+    
+//  }
+}
+
+void blinkLEDTaskOnce(unsigned long currentMillis) {
+  if (currentMillis - previousMillis1 >= led_interval) {    // check if 1000ms passed
+    previousMillis1 = currentMillis;   // save the last time you blinked the LED
+    if (ledState == LOW) {  // if the LED is off turn it on and vice-versa
+      ledState = HIGH;   //change led state for next iteration
+    } else {
+      ledState = LOW;
+    }
+    digitalWrite(D0_LED_BUILTIN, ledState);    //set LED with ledState to blink again
+
+    // listen local webserver every 1 seconds
+    server.handleClient();
+    MDNS.update();
+  }
+
+  
+//  static long ledTime = 0;  // static define value once only
+//  ledTime = ledTime + elapsedMS;
+// 
+//  if(ledTime >= led_interval) {
+//    ledState = !ledState;
+//    digitalWrite(D0_LED_BUILTIN,ledState);   
+//    ledTime = ledTime - led_interval;
+//
+//    // listen local webserver every 1 seconds
+//    server.handleClient();
+//    MDNS.update();
+//  }
 }
 
 bool loadInternalConfig() {
@@ -323,7 +448,7 @@ bool loadInternalConfig() {
 }
 
 void processNormalTasks(long elapsedMS) {
-  if ((WiFi.status() == WL_CONNECTED))  {
+  
         // Delay test 1 minutes
 //        for (int i = 0; i < 30; i++) {
         // Delay test 10 seconds
@@ -360,20 +485,22 @@ void processNormalTasks(long elapsedMS) {
 //    5sec=5000ms=300
 //    readingInterval = 300; = 5sec
     if(ledTime >= readingInterval) {
-      Serial.println("");
-      Serial.print("gDeviceReadingInterval(millisecond)=");
-      Serial.println(gDeviceReadingInterval);
-      Serial.print("elapsedMS=");
-      Serial.println(elapsedMS);
-      Serial.print("normal ledTime=");
-      Serial.println(ledTime);
-      Serial.print("readingInterval=");
-      Serial.println(readingInterval);
-
-      processReadSensor();
-
-//      ledTime = ledTime - BurstModeInterval;
-      ledTime = ledTime - readingInterval;
+      if ((WiFi.status() == WL_CONNECTED))  {
+        Serial.println("");
+        Serial.print("gDeviceReadingInterval(millisecond)=");
+        Serial.println(gDeviceReadingInterval);
+        Serial.print("elapsedMS=");
+        Serial.println(elapsedMS);
+        Serial.print("normal ledTime=");
+        Serial.println(ledTime);
+        Serial.print("readingInterval=");
+        Serial.println(readingInterval);
+  
+        processReadSensor();
+  
+  //      ledTime = ledTime - BurstModeInterval;
+        ledTime = ledTime - readingInterval;
+      }
     } 
 //    } else  {
 //      Serial.print(".");
@@ -387,7 +514,7 @@ void processNormalTasks(long elapsedMS) {
 ////      }
 //    }
     
-  }
+//  }
 }
 
 bool processReadSensor(void) {
@@ -831,13 +958,22 @@ bool saveDataToCloudDatabase(void) {
     Serial.print(gTemperature);
     Serial.println(" Celsius");
 
+    delay(1000);
     // handle error
     if (Firebase.failed()) {
         Serial.print("setting /node data failed:");
         Serial.println(Firebase.error());  
-        return false;
+        
+        delay(1000);
+        
+        // resend sensor value to firebase again
+        Firebase.set(nodeString, sensorValues); 
+        if (Firebase.failed()) {
+          Serial.print("resend /node data failed again:");
+          Serial.println(Firebase.error());  
+          return false;
+        } 
     }
-    delay(1000);
     
     Serial.println("saveDataToCloudDatabase() Finished");
     Serial.println("");
@@ -1064,10 +1200,10 @@ void blinkLEDOnce(long elapsedMS) {
   static long ledTime = 0;  // static define value once only
   ledTime = ledTime + elapsedMS;
  
-  if(ledTime >= interval) {
+  if(ledTime >= led_interval) {
     ledState = !ledState;
     digitalWrite(D0_LED_BUILTIN,ledState);   
-    ledTime = ledTime - interval;
+    ledTime = ledTime - led_interval;
 
     // listen local webserver every 1 seconds
     server.handleClient();
