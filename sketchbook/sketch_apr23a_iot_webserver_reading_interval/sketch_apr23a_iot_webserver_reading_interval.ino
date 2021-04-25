@@ -105,6 +105,7 @@ bool listenResetButton(long elapsedMS);
 bool resetManufacturingMode(void);
 void processNormalTasks(long elapsedMS);
 bool loadInternalConfig();
+bool processReadSensor(void);
 
 // Buttons
 const int resetButton = 16;
@@ -159,9 +160,9 @@ void setup() {
     Serial.println("Waiting update settings device trigger.");
    
     
-    Serial.print("gWorkingMode == SETUP_MODE...=>");
+//    Serial.print("gWorkingMode == SETUP_MODE...=>");
 //    Serial.println(strcmp(gWorkingMode, SETUP_MODE) == 0);
-    Serial.println(gWorkingMode.equals(SETUP_MODE));
+//    Serial.println(gWorkingMode.equals(SETUP_MODE));
 //    if(strcmp(gWorkingMode, SETUP_MODE) == 0) {
     if(gWorkingMode.equals(SETUP_MODE)) {
       Serial.println("Doing.. setup new device...!!!");
@@ -175,6 +176,8 @@ void setup() {
       Serial.println("Continue to sensor reading process...!!!");
     }
 
+    // run read sensor once when start process
+    processReadSensor();
     
 //    while ((WiFi.status() != WL_CONNECTED))  {
 //      Serial.println(".");
@@ -341,7 +344,15 @@ void processNormalTasks(long elapsedMS) {
    if(readingInterval == 0) {
     readingInterval = (DEFAULT_READING_INTERVAL_LONG / 1000) * 60;
    } else {
-    readingInterval = (readingInterval / 1000) * 60;
+    if(readingInterval > 60000) {
+      // if over 1 minute, change the way to calculate
+      readingInterval = (readingInterval / 60000) * 3600; // (convert millisecond to minutes) * 3600 to round
+    } else if(readingInterval > 3600000){
+      // if over 1 minute, change the way to calculate
+      readingInterval = (readingInterval / 3600000) * 216000; // (convert millisecond to hours) * 216000 to round
+    } else {
+      readingInterval = (readingInterval / 1000) * 60;
+    }
    }
 //    if(ledTime >= BurstModeInterval) {
 //    10sec=10000ms=600
@@ -352,45 +363,53 @@ void processNormalTasks(long elapsedMS) {
       Serial.println("");
       Serial.print("gDeviceReadingInterval(millisecond)=");
       Serial.println(gDeviceReadingInterval);
-//      Serial.print("elapsedMS=");
-//      Serial.println(elapsedMS);
-//      Serial.print("normal ledTime=");
-//      Serial.println(ledTime);
-//      Serial.print("readingInterval=");
-//      Serial.println(readingInterval);
+      Serial.print("elapsedMS=");
+      Serial.println(elapsedMS);
+      Serial.print("normal ledTime=");
+      Serial.println(ledTime);
+      Serial.print("readingInterval=");
+      Serial.println(readingInterval);
 
-      Serial.println("doing read sensor...");
-      if(readSensor()) {
-        Serial.println("Succesfully read sensor data!!!++++++++");
-        if(saveDataToCloudDatabase()) {
-          Serial.println("Successfully Update data to the Cloud!!!");
-          Serial.println("");
-    
-            // Delay belong to working mode, default is burst mode, 10 seconds
-    //        delay(10000);
-        } else {
-          Serial.println("Update data to the Cloud Failured!!!");
-        }  
-      } else {
-        Serial.println("Read sensor Failured!!!");
-      }
+      processReadSensor();
 
 //      ledTime = ledTime - BurstModeInterval;
       ledTime = ledTime - readingInterval;
-        
-    } else  {
-      Serial.print(".");
-//      if(elapsedMS == 1) {
-////      Serial.println("not reach interval time yet!!!");
-//        Serial.print("normal ledTime=");
-//        Serial.println(ledTime);
-//        Serial.print("elapsedMS=");
-//        Serial.println(elapsedMS);
-//        Serial.println("");
-//      }
-    }
+    } 
+//    } else  {
+//      Serial.print(".");
+////      if(elapsedMS == 1) {
+//////      Serial.println("not reach interval time yet!!!");
+////        Serial.print("normal ledTime=");
+////        Serial.println(ledTime);
+////        Serial.print("elapsedMS=");
+////        Serial.println(elapsedMS);
+////        Serial.println("");
+////      }
+//    }
     
   }
+}
+
+bool processReadSensor(void) {
+  bool result = false;
+
+  Serial.println("doing read sensor...");
+  if(readSensor()) {
+    Serial.println("Succesfully read sensor data!!!++++++++");
+    if(saveDataToCloudDatabase()) {
+      Serial.println("Successfully Update data to the Cloud!!!");
+      Serial.println("");
+      result = true;
+        // Delay belong to working mode, default is burst mode, 10 seconds
+//        delay(10000);
+    } else {
+      Serial.println("Update data to the Cloud Failured!!!");
+    }  
+  } else {
+    Serial.println("Read sensor Failured!!!");
+  }
+
+  return result;
 }
 
 

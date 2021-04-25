@@ -51,7 +51,7 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
   void initState() {
     super.initState();
     // Load necessary cloud database
-
+    // may be not use
     deviceDatabase = DeviceDatabase(device: device, user: user);
     // deviceDatabase.initState();
   }
