@@ -64,6 +64,7 @@ DHT dht(DHTPIN, DHTTYPE);
 #define FIREBASE_HOST "asset-management-lff.firebaseio.com"
 #define FIREBASE_AUTH "tyPYNCdjHQREFNsW46sha4JhOFG4WG4U7pL8iShx"
 #define DEFAULT_READING_INTERVAL "10000"
+#define DEFAULT_READING_INTERVAL_LONG 10000
 // ======================================================================
 // Set to true to reset eeprom before to write something
 #define RESET_EEPROM true
@@ -332,23 +333,38 @@ void processNormalTasks(long elapsedMS) {
 
     static long ledTime = 0;  // static define value once only
     ledTime = ledTime + elapsedMS;
-//    Serial.print("normal ledTime=");
-//    Serial.println(ledTime);
+
 //    Serial.print("normal BurstModeInterval=");
 //    Serial.println(BurstModeInterval);
-    long readingInterval = strtol(gDeviceReadingInterval.c_str(), NULL, 0 );
-//    Serial.print("readingInterval=");
-//    Serial.println(readingInterval);
-   
+    
+   long readingInterval = strtol(gDeviceReadingInterval.c_str(), NULL, 0 );
+   if(readingInterval == 0) {
+    readingInterval = (DEFAULT_READING_INTERVAL_LONG / 1000) * 60;
+   } else {
+    readingInterval = (readingInterval / 1000) * 60;
+   }
 //    if(ledTime >= BurstModeInterval) {
+//    10sec=10000ms=600
+//    1sec=1000ms=60
+//    5sec=5000ms=300
+//    readingInterval = 300; = 5sec
     if(ledTime >= readingInterval) {
-      
-//      ledState = !ledState;
+      Serial.println("");
+      Serial.print("gDeviceReadingInterval(millisecond)=");
+      Serial.println(gDeviceReadingInterval);
+//      Serial.print("elapsedMS=");
+//      Serial.println(elapsedMS);
+//      Serial.print("normal ledTime=");
+//      Serial.println(ledTime);
+//      Serial.print("readingInterval=");
+//      Serial.println(readingInterval);
+
       Serial.println("doing read sensor...");
       if(readSensor()) {
         Serial.println("Succesfully read sensor data!!!++++++++");
         if(saveDataToCloudDatabase()) {
-          Serial.println("Succesfully Update data to the Cloud!!!");
+          Serial.println("Successfully Update data to the Cloud!!!");
+          Serial.println("");
     
             // Delay belong to working mode, default is burst mode, 10 seconds
     //        delay(10000);
@@ -363,7 +379,15 @@ void processNormalTasks(long elapsedMS) {
       ledTime = ledTime - readingInterval;
         
     } else  {
-//      Serial.println("not reach interval time yet!!!");
+      Serial.print(".");
+//      if(elapsedMS == 1) {
+////      Serial.println("not reach interval time yet!!!");
+//        Serial.print("normal ledTime=");
+//        Serial.println(ledTime);
+//        Serial.print("elapsedMS=");
+//        Serial.println(elapsedMS);
+//        Serial.println("");
+//      }
     }
     
   }
@@ -568,17 +592,23 @@ void createWebServer(void) {
       if (qfbhost.length() > 0 && qfbauth.length() > 0) {
         hasValues = true;
         // fbhost size 64 characters
+        // Clear part
+        for (int i = 0; i < 64; ++i) { 
+          EEPROM.write(96 + i, 0);
+        }
         Serial.println("writing eeprom fbhost:");
-        for (int i = 0; i < qfbhost.length(); ++i)
-        {
+        for (int i = 0; i < qfbhost.length(); ++i) {
           EEPROM.write(96 + i, qfbhost[i]);
           Serial.print("Wrote: ");
           Serial.println(qfbhost[i]);
         }
         // fbauth size 64 characters
+        // Clear part
+        for (int i = 0; i < 64; ++i) { 
+          EEPROM.write(160 + i, 0);
+        }
         Serial.println("writing eeprom fbauth:");
-        for (int i = 0; i < qfbauth.length(); ++i)
-        {
+        for (int i = 0; i < qfbauth.length(); ++i) {
           EEPROM.write(160 + i, qfbauth[i]);
           Serial.print("Wrote: ");
           Serial.println(qfbauth[i]);
@@ -589,9 +619,12 @@ void createWebServer(void) {
       if (qmode.length() > 0) {
         hasValues = true;
         // mode size 20 characters
+        // Clear part
+        for (int i = 0; i < 20; ++i) { 
+          EEPROM.write(224 + i, 0);
+        }
         Serial.println("writing eeprom mode:");
-        for (int i = 0; i < qmode.length(); ++i)
-        {
+        for (int i = 0; i < qmode.length(); ++i) {
           EEPROM.write(224 + i, qmode[i]);
           Serial.print("Wrote: ");
           Serial.println(qmode[i]);
@@ -602,64 +635,10 @@ void createWebServer(void) {
       if (qname.length() > 0) {
         hasValues = true;
         // (device)name size 64 characters
-        Serial.println("writing eeprom device name:");
-        for (int i = 0; i < qname.length(); ++i)
-        {
-          EEPROM.write(244 + i, qname[i]);
-          Serial.print("Wrote: ");
-          Serial.println(qname[i]);
+        // Clear part
+        for (int i = 0; i < 64; ++i) { 
+          EEPROM.write(244 + i, 0);
         }
-      }
-
-      // save device reading interval into eeprom
-      if (qinterval.length() > 0) {
-        hasValues = true;
-        // (device)reading interval size 10 characters (1 week = 168 hours = 604,800,000 milliseconds)
-        Serial.println("writing eeprom device reading interval:");
-        for (int i = 0; i < qinterval.length(); ++i)
-        {
-          EEPROM.write(308 + i, qinterval[i]);
-          Serial.print("Wrote: ");
-          Serial.println(qinterval[i]);
-        }
-      }// save firebase host and auth into eeprom
-      if (qfbhost.length() > 0 && qfbauth.length() > 0) {
-        hasValues = true;
-        // fbhost size 64 characters
-        Serial.println("writing eeprom fbhost:");
-        for (int i = 0; i < qfbhost.length(); ++i)
-        {
-          EEPROM.write(96 + i, qfbhost[i]);
-          Serial.print("Wrote: ");
-          Serial.println(qfbhost[i]);
-        }
-        // fbauth size 64 characters
-        Serial.println("writing eeprom fbauth:");
-        for (int i = 0; i < qfbauth.length(); ++i)
-        {
-          EEPROM.write(160 + i, qfbauth[i]);
-          Serial.print("Wrote: ");
-          Serial.println(qfbauth[i]);
-        }
-      }
-
-      // save working mode into eeprom
-      if (qmode.length() > 0) {
-        hasValues = true;
-        // mode size 20 characters
-        Serial.println("writing eeprom mode:");
-        for (int i = 0; i < qmode.length(); ++i)
-        {
-          EEPROM.write(224 + i, qmode[i]);
-          Serial.print("Wrote: ");
-          Serial.println(qmode[i]);
-        }
-      }
-
-      // save device name into eeprom
-      if (qname.length() > 0) {
-        hasValues = true;
-        // (device)name size 64 characters
         Serial.println("writing eeprom device name:");
         for (int i = 0; i < qname.length(); ++i) {
           EEPROM.write(244 + i, qname[i]);
@@ -671,7 +650,11 @@ void createWebServer(void) {
       // save device reading interval into eeprom
       if (qinterval.length() > 0) {
         hasValues = true;
-        // (device)reading interval size 10 characters (1 week = 168 hours = 604,800,000 milliseconds)
+        // (device)reading interval size 10 characters. (1 week = 168 hours = 604,800,000 milliseconds)
+        // Clear part
+        for (int i = 0; i < 10; ++i) { 
+          EEPROM.write(308 + i, 0);
+        }
         Serial.println("writing eeprom device reading interval:");
         for (int i = 0; i < qinterval.length(); ++i) {
           EEPROM.write(308 + i, qinterval[i]);
@@ -679,10 +662,68 @@ void createWebServer(void) {
           Serial.println(qinterval[i]);
         }
       }
+//      // save firebase host and auth into eeprom
+//      if (qfbhost.length() > 0 && qfbauth.length() > 0) {
+//        hasValues = true;
+//        // fbhost size 64 characters
+//        Serial.println("writing eeprom fbhost:");
+//        for (int i = 0; i < qfbhost.length(); ++i)
+//        {
+//          EEPROM.write(96 + i, qfbhost[i]);
+//          Serial.print("Wrote: ");
+//          Serial.println(qfbhost[i]);
+//        }
+//        // fbauth size 64 characters
+//        Serial.println("writing eeprom fbauth:");
+//        for (int i = 0; i < qfbauth.length(); ++i)
+//        {
+//          EEPROM.write(160 + i, qfbauth[i]);
+//          Serial.print("Wrote: ");
+//          Serial.println(qfbauth[i]);
+//        }
+//      }
+//
+//      // save working mode into eeprom
+//      if (qmode.length() > 0) {
+//        hasValues = true;
+//        // mode size 20 characters
+//        Serial.println("writing eeprom mode:");
+//        for (int i = 0; i < qmode.length(); ++i)
+//        {
+//          EEPROM.write(224 + i, qmode[i]);
+//          Serial.print("Wrote: ");
+//          Serial.println(qmode[i]);
+//        }
+//      }
+//
+//      // save device name into eeprom
+//      if (qname.length() > 0) {
+//        hasValues = true;
+//        // (device)name size 64 characters
+//        Serial.println("writing eeprom device name:");
+//        for (int i = 0; i < qname.length(); ++i) {
+//          EEPROM.write(244 + i, qname[i]);
+//          Serial.print("Wrote: ");
+//          Serial.println(qname[i]);
+//        }
+//      }
+//
+//      // save device reading interval into eeprom
+//      if (qinterval.length() > 0) {
+//        hasValues = true;
+//        // (device)reading interval size 10 characters (1 week = 168 hours = 604,800,000 milliseconds)
+//        Serial.println("writing eeprom device reading interval:");
+//        for (int i = 0; i < qinterval.length(); ++i) {
+//          EEPROM.write(308 + i, qinterval[i]);
+//          Serial.print("Wrote: ");
+//          Serial.println(qinterval[i]);
+//        }
+//      }
       
       // Test print out interval argument
       if (qinterval.length() > 0) {
         hasValues = true;        
+        wantReset = true;
         Serial.print("qinterval=");
         for (int i = 0; i < qinterval.length(); ++i) {
           EEPROM.write(308 + i, qinterval[i]);
@@ -778,9 +819,9 @@ bool saveDataToCloudDatabase(void) {
         return false;
     }
     delay(1000);
-
-    Serial.println("");
+    
     Serial.println("saveDataToCloudDatabase() Finished");
+    Serial.println("");
   } else {
     Serial.println("get the current date time string failured!!");
     return false;

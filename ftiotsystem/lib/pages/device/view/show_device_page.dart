@@ -53,7 +53,7 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
     // Load necessary cloud database
 
     deviceDatabase = DeviceDatabase(device: device, user: user);
-    deviceDatabase.initState();
+    // deviceDatabase.initState();
   }
 
   @override
@@ -568,6 +568,17 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
    * First contact to "the Node" to pass reading interval value
    */
   Future<http.Response> updateReadingInterval() async {
+    // update reading interval in cloud database
+    // deviceDatabase.updateDevice(device);
+    print('update reading interval in cloud database - users/${user.uid}/devices/${device.uid}');
+    var deviceRef = FirebaseDatabase.instance
+        .reference()
+        .child('users/${user.uid}/devices/${device.uid}')
+        .update({
+      // 'name':  device.name,
+      'readingInterval': selectedInterval,
+    });
+
     // Hostname on device detail page
     String hostName = '';
     String hostIp = '';
@@ -593,53 +604,207 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
       throw Exception('Failed to do wifi settings');
     }
 
+
+
+
     return response;
   }
 
   @override
   void afterFirstLayout(BuildContext context) {
-    // TODO: implement afterFirstLayout
-    switch(device.mode) {
-      case Constants.MODE_BURST: {
-        burstePressed = true;
-        requestPressed = false;
-        pollingPressed = false;
-        offlinePressed = false;
+    switch(device.readingInterval) {
+      case Constants.INTERVAL_SECOND_10: {
+        setState(() {
+          sec10Pressed = true;
+          sec30Pressed = false;
+          min1Pressed = false;
+          min5Pressed = false;
+          min30Pressed = false;
+          hour1Pressed = false;
+          hour2Pressed = false;
+          hour3Pressed = false;
+          hour4Pressed = false;
+        });
       }
       break;
 
-      case Constants.MODE_REQUEST: {
-        burstePressed = false;
-        requestPressed = true;
-        pollingPressed = false;
-        offlinePressed = false;
+      case Constants.INTERVAL_SECOND_30: {
+        setState(() {
+          sec10Pressed = false;
+          sec30Pressed = true;
+          min1Pressed = false;
+          min5Pressed = false;
+          min30Pressed = false;
+          hour1Pressed = false;
+          hour2Pressed = false;
+          hour3Pressed = false;
+          hour4Pressed = false;
+        });
       }
       break;
 
-      case Constants.MODE_POLLING: {
-        burstePressed = false;
-        requestPressed = false;
-        pollingPressed = true;
-        offlinePressed = false;
+      case Constants.INTERVAL_MINUTE_1: {
+        setState(() {
+          sec10Pressed = false;
+          sec30Pressed = false;
+          min1Pressed = true;
+          min5Pressed = false;
+          min30Pressed = false;
+          hour1Pressed = false;
+          hour2Pressed = false;
+          hour3Pressed = false;
+          hour4Pressed = false;
+        });
       }
       break;
 
-      case Constants.MODE_OFFLINE: {
-        burstePressed = false;
-        requestPressed = false;
-        pollingPressed = false;
-        offlinePressed = true;
+      case Constants.INTERVAL_MINUTE_5: {
+        setState(() {
+          sec10Pressed = false;
+          sec30Pressed = false;
+          min1Pressed = false;
+          min5Pressed = true;
+          min30Pressed = false;
+          hour1Pressed = false;
+          hour2Pressed = false;
+          hour3Pressed = false;
+          hour4Pressed = false;
+        });
+      }
+      break;
+
+      case Constants.INTERVAL_MINUTE_30: {
+        setState(() {
+          sec10Pressed = false;
+          sec30Pressed = false;
+          min1Pressed = false;
+          min5Pressed = false;
+          min30Pressed = true;
+          hour1Pressed = false;
+          hour2Pressed = false;
+          hour3Pressed = false;
+          hour4Pressed = false;
+        });
+      }
+      break;
+
+      case Constants.INTERVAL_HOUR_1: {
+        setState(() {
+          sec10Pressed = false;
+          sec30Pressed = false;
+          min1Pressed = false;
+          min5Pressed = false;
+          min30Pressed = false;
+          hour1Pressed = true;
+          hour2Pressed = false;
+          hour3Pressed = false;
+          hour4Pressed = false;
+        });
+      }
+      break;
+
+      case Constants.INTERVAL_HOUR_2: {
+        setState(() {
+          sec10Pressed = false;
+          sec30Pressed = false;
+          min1Pressed = false;
+          min5Pressed = false;
+          min30Pressed = false;
+          hour1Pressed = false;
+          hour2Pressed = true;
+          hour3Pressed = false;
+          hour4Pressed = false;
+        });
+      }
+      break;
+
+      case Constants.INTERVAL_HOUR_3: {
+        setState(() {
+          sec10Pressed = false;
+          sec30Pressed = false;
+          min1Pressed = false;
+          min5Pressed = false;
+          min30Pressed = false;
+          hour1Pressed = false;
+          hour2Pressed = false;
+          hour3Pressed = true;
+          hour4Pressed = false;
+        });
+      }
+      break;
+
+      case Constants.INTERVAL_HOUR_4: {
+        setState(() {
+          sec10Pressed = false;
+          sec30Pressed = false;
+          min1Pressed = false;
+          min5Pressed = false;
+          min30Pressed = false;
+          hour1Pressed = false;
+          hour2Pressed = false;
+          hour3Pressed = false;
+          hour4Pressed = true;
+        });
       }
       break;
 
       default: {
-        burstePressed = false;
-        requestPressed = false;
-        pollingPressed = false;
-        offlinePressed = false;
+        setState(() {
+          sec10Pressed = false;
+          sec30Pressed = true;
+          min1Pressed = false;
+          min5Pressed = false;
+          min30Pressed = false;
+          hour1Pressed = false;
+          hour2Pressed = false;
+          hour3Pressed = false;
+          hour4Pressed = false;
+        });
       }
       break;
 
     }
+    // switch(device.mode) {
+    //   case Constants.MODE_BURST: {
+    //     burstePressed = true;
+    //     requestPressed = false;
+    //     pollingPressed = false;
+    //     offlinePressed = false;
+    //   }
+    //   break;
+    //
+    //   case Constants.MODE_REQUEST: {
+    //     burstePressed = false;
+    //     requestPressed = true;
+    //     pollingPressed = false;
+    //     offlinePressed = false;
+    //   }
+    //   break;
+    //
+    //   case Constants.MODE_POLLING: {
+    //     burstePressed = false;
+    //     requestPressed = false;
+    //     pollingPressed = true;
+    //     offlinePressed = false;
+    //   }
+    //   break;
+    //
+    //   case Constants.MODE_OFFLINE: {
+    //     burstePressed = false;
+    //     requestPressed = false;
+    //     pollingPressed = false;
+    //     offlinePressed = true;
+    //   }
+    //   break;
+    //
+    //   default: {
+    //     burstePressed = false;
+    //     requestPressed = false;
+    //     pollingPressed = false;
+    //     offlinePressed = false;
+    //   }
+    //   break;
+    //
+    // }
   }
 }

@@ -78,8 +78,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final ref = fb.reference();
-    final devicesRef = ref.child("devices");
+    // final ref = fb.reference();
+    // var devicesRef = ref.child("devices");
 
     return Scaffold(
       appBar: AppBar(

@@ -100,16 +100,14 @@ class DeviceDatabase {
   //   });
   // }
   //
-  // void updateUser(User user) async {
-  //   await _deviceRef.child(user.id).update({
-  //     "name": "" + user.name,
-  //     "age": "" + user.age,
-  //     "email": "" + user.email,
-  //     "mobile": "" + user.mobile,
-  //   }).then((_) {
-  //     print('Transaction  committed.');
-  //   });
-  // }
+  void updateDevice(Device device) async {
+    await _deviceRef.child(device.uid).update({
+      'name':  device.name,
+      'readingInterval': device.readingInterval,
+    }).then((_) {
+      print('Transaction  committed.');
+    });
+  }
 
   void dispose() {
     _messagesSubscription.cancel();

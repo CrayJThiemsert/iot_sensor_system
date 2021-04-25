@@ -10,6 +10,7 @@ class Device extends Item{
   final String name;
   final String mode;
   final String localip;
+  final int readingInterval;
   // List<Header> headers;
   // List<ItemData> itemDatas;
   // Topic topic;
@@ -21,6 +22,7 @@ class Device extends Item{
     String name = '',
     String mode = '',
     String localip = '',
+    int readingInterval = 0,
     // List<Header> headers,
     // List<ItemData> itemDatas,
     // Topic topic,
@@ -29,6 +31,7 @@ class Device extends Item{
       this.name = name ?? '',
       this.mode = mode ?? '',
       this.localip = localip ?? '',
+      this.readingInterval = readingInterval ?? 0,
       this.id = id ?? '',
       this.uid = uid ?? ''
       // this.headers = headers,
@@ -43,6 +46,7 @@ class Device extends Item{
     String name,
     String mode,
     String localip,
+    int readingInterval,
     // List<Header> headers,
     // List<ItemData> itemDatas,
     // Topic topic,
@@ -54,6 +58,7 @@ class Device extends Item{
       name: name ?? this.name,
       mode: mode ?? this.mode,
       localip: localip ?? this.localip,
+      readingInterval: readingInterval ?? this.readingInterval,
       // headers: headers ?? this.headers,
       // itemDatas: itemDatas ?? this.itemDatas,
       // topic: topic ?? this.topic,
@@ -62,7 +67,7 @@ class Device extends Item{
 
   @override
   int get hashCode =>
-      id.hashCode ^ uid.hashCode ^ index.hashCode ^ name.hashCode ^ mode.hashCode ^ localip.hashCode; // ^ topic.hashCode;
+      id.hashCode ^ uid.hashCode ^ index.hashCode ^ name.hashCode ^ mode.hashCode ^ localip.hashCode ^ readingInterval.hashCode; // ^ topic.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -74,6 +79,7 @@ class Device extends Item{
         index == other.index &&
         mode == other.mode &&
         localip == other.localip &&
+        readingInterval == other.readingInterval &&
         name == other.name; // &&
         // headers == other.headers &&
         // itemDatas == other.itemDatas &&
@@ -81,7 +87,7 @@ class Device extends Item{
 
   @override
   String toString() {
-    return 'Device { id: $id, uid: $uid, index: $index, name: $name, mode: $mode, localip: $localip}'; //, headers: $headers, itemDatas: ${itemDatas}, topic: ${topic} }';
+    return 'Device { id: $id, uid: $uid, index: $index, name: $name, mode: $mode, localip: $localip, readingInterval: $readingInterval }'; //, headers: $headers, itemDatas: ${itemDatas}, topic: ${topic} }';
   }
 
   ItemEntity toEntity() {

@@ -15,6 +15,16 @@ class Constants extends InheritedWidget {
   static const MODE_REQUEST = "request";
   static const MODE_OFFLINE = "offline";
 
+  static const INTERVAL_SECOND_10 = 10000;
+  static const INTERVAL_SECOND_30 = 30000;
+  static const INTERVAL_MINUTE_1 = 60000;
+  static const INTERVAL_MINUTE_5 = 300000;
+  static const INTERVAL_MINUTE_30 = 1800000;
+  static const INTERVAL_HOUR_1 = 3600000;
+  static const INTERVAL_HOUR_2 = 7200000;
+  static const INTERVAL_HOUR_3 = 10800000;
+  static const INTERVAL_HOUR_4 = 14400000;
+
   // static const xx = TextStyle(
   //   color: Colors.white,
   //   fontFamily: 'Kanit',

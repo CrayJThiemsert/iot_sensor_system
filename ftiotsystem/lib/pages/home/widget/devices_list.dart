@@ -20,15 +20,14 @@ class _DevicesListState extends State<DevicesList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: FutureBuilder(
-          future: dbRef.once(),
-          builder: (context, AsyncSnapshot<DataSnapshot> snapshot) {
+    return StreamBuilder(
+          stream: dbRef.onValue,
+          builder: (context, AsyncSnapshot<Event> snapshot) {
             if (snapshot.hasData) {
 
               lists.clear();
               deviceLists.clear();
-              Map<dynamic, dynamic> values = snapshot.data.value;
+              Map<dynamic, dynamic> values = snapshot.data.snapshot.value;
               values.forEach((key, values) {
                 print('key=${key}');
                 // lists.add(key);
@@ -41,6 +40,7 @@ class _DevicesListState extends State<DevicesList> {
                   name: values['name'],
                   mode: values['mode'] ?? Constants.MODE_BURST,
                   localip: values['localip'],
+                  readingInterval: values['readingInterval'],
                 ));
               });
 
@@ -63,7 +63,7 @@ class _DevicesListState extends State<DevicesList> {
               );
             }
             return CircularProgressIndicator();
-          }),
+          },
     );
 
   }
