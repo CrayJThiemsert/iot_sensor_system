@@ -265,7 +265,7 @@ void processDeepSleep() {
     readingInterval = DEFAULT_READING_INTERVAL_LONG;
    }
 //  ESP.deepSleep(10E6, WAKE_RFCAL); // good night!  D0 fires a reset in 10 seconds...
-  long sleepInterval = readingInterval * 1000;
+  unsigned long sleepInterval = readingInterval * 1000;
   Serial.print("I am going to sleep and will wakeup in next ");
   Serial.print(sleepInterval);
   Serial.println("microsecond");
