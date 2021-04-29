@@ -10,6 +10,7 @@ class WeatherHistory extends Equatable {
   final double humidity;
   final double temperature;
   final WeatherData weatherData;
+  final double readVoltage;
 
   factory WeatherHistory.fromJson(Map<dynamic, dynamic> json) {
     if(json != null) {
@@ -43,17 +44,17 @@ class WeatherHistory extends Equatable {
   }
 
   const WeatherHistory(
-      {this.id, this.key, this.deviceId, this.humidity, this.temperature, this.weatherData});
+      {this.id, this.key, this.deviceId, this.humidity, this.temperature, this.weatherData, this.readVoltage});
 
   @override
-  List<Object> get props => [id, key, deviceId, humidity, temperature];
+  List<Object> get props => [id, key, deviceId, humidity, temperature, readVoltage];
 
   static const empty = WeatherHistory(
-      id: '', key: '', deviceId: '', humidity: double.nan, temperature: double.nan);
+      id: '', key: '', deviceId: '', humidity: double.nan, temperature: double.nan, readVoltage: double.nan);
 
   @override
   String toString() {
-    return 'User{id: $id, uid: $key, deviceId: $deviceId, humidity: $humidity, temperature: $temperature}';
+    return 'User{id: $id, uid: $key, deviceId: $deviceId, humidity: $humidity, temperature: $temperature, readVoltage: $readVoltage}';
   }
 }
 
@@ -63,12 +64,14 @@ class WeatherData {
     this.temperature,
     this.humidity,
     this.deviceId,
+    this.readVoltage,
   });
 
   String uid;
   String deviceId;
   double temperature = double.nan;
   double humidity = double.nan;
+  double readVoltage = double.nan;
 
   factory WeatherData.fromJson(Map<dynamic, dynamic> json) {
     print('WeatherData.fromJson json= ${json}');
@@ -77,6 +80,7 @@ class WeatherData {
       deviceId: json['deviceId'],
       temperature: json['temperature'].toDouble(),
       humidity: json['humidity'].toDouble(),
+      readVoltage: json['readVoltage'].toDouble(),
     );
   }
 
@@ -96,6 +100,7 @@ class WeatherData {
       deviceId: snap.value['deviceId'] ?? '',
       humidity: double.parse(snap.value['humidity'].toString()) ?? double.nan,
       temperature: double.parse(snap.value['temperature'].toString()) ?? double.nan,
+      readVoltage: double.parse(snap.value['readVoltage'].toString()) ?? double.nan,
     );
   }
 
@@ -104,10 +109,11 @@ class WeatherData {
     "temperature": temperature,
     "humidity": humidity,
     "deviceId": deviceId,
+    "readVoltage": readVoltage,
   };
 
   @override
   String toString() {
-    return 'User{uid: $uid, deviceId: $deviceId, humidity: $humidity, temperature: $temperature}';
+    return 'User{uid: $uid, deviceId: $deviceId, humidity: $humidity, temperature: $temperature, readVoltage: $readVoltage}';
   }
 }

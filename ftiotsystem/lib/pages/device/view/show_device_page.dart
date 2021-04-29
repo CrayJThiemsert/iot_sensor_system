@@ -109,7 +109,7 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                                 SizedBox(height: 50,),
                                 Container(
                                   child: Text(
-                                    '${weatherHistory?.weatherData?.temperature ?? ''}',
+                                    '${globals.formatNumber(weatherHistory?.weatherData?.temperature) ?? ''}',
                                     style: headlineStyle,
                                     // style: TextStyle(
                                     //   color: Colors.white,
@@ -140,7 +140,7 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                                 SizedBox(height: 50,),
                                 Container(
                                   child: Text(
-                                    '${weatherHistory?.weatherData?.humidity ?? ''}',
+                                    '${globals.formatNumber(weatherHistory?.weatherData?.humidity) ?? ''}',
                                     style: headlineStyle,
                                     // style: TextStyle(
                                     //   color: Colors.white,
@@ -178,6 +178,12 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                   Center(
                     child: Container(
                       child: Text('latest when ${weatherHistory?.weatherData?.uid ?? 'no data'}'),
+                    ),
+                  ),
+                  Center(
+                    child: Container(
+                      // child: Text('battery voltage ${weatherHistory?.weatherData?.readVoltage.toStringAsFixed(weatherHistory?.weatherData?.readVoltage.truncateToDouble() == weatherHistory?.weatherData?.readVoltage ? 0 : 2) ?? 'no data'} volts'),
+                      child: Text('battery voltage ${globals.formatNumber(weatherHistory?.weatherData?.readVoltage) ?? 'no data'} volts'),
                     ),
                   ),
                   buildReadingIntervalCard(context),
