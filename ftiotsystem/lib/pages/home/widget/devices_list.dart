@@ -40,7 +40,7 @@ class _DevicesListState extends State<DevicesList> {
                   name: values['name'],
                   mode: values['mode'] ?? Constants.MODE_BURST,
                   localip: values['localip'],
-                  readingInterval: values['readingInterval'],
+                  readingInterval: values['readingInterval'] ?? 10000,
                 ));
               });
 

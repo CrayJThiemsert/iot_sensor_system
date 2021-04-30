@@ -110,8 +110,10 @@ class DeviceDatabase {
   }
 
   void dispose() {
-    _messagesSubscription.cancel();
-    _historyrSubscription.cancel();
+    // _messagesSubscription.cancel();
+    if(_historyrSubscription != null) {
+      _historyrSubscription.cancel();
+    }
   }
 
 
