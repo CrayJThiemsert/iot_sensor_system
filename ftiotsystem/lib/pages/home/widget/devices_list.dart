@@ -163,7 +163,7 @@ class _DeviceCardState extends State<DeviceCard> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            Text('${numberFormat.format(widget.device.humidity)} \u2103', style: numberStyle, textAlign: TextAlign.center,),
+                            Text('${numberFormat.format(widget.device.temperature)} \u2103', style: numberStyle, textAlign: TextAlign.center,),
                             Divider(
                               color: Colors.cyanAccent, //.withOpacity(0.2),
                               thickness: 1,
@@ -172,7 +172,7 @@ class _DeviceCardState extends State<DeviceCard> {
                               indent: 2,
                               endIndent: 2,
                             ),
-                            Text('${numberFormat.format(widget.device.temperature)} %', style: numberStyle, textAlign: TextAlign.center,),
+                            Text('${numberFormat.format(widget.device.humidity)} %', style: numberStyle, textAlign: TextAlign.center,),
                           ],
                       ),
                     ),
