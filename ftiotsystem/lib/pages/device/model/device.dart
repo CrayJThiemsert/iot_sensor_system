@@ -11,6 +11,10 @@ class Device extends Item{
   final String mode;
   final String localip;
   final int readingInterval;
+  final double humidity;
+  final double temperature;
+  final double readVoltage;
+  final String updatedWhen;
   // List<Header> headers;
   // List<ItemData> itemDatas;
   // Topic topic;
@@ -23,6 +27,10 @@ class Device extends Item{
     String mode = '',
     String localip = '',
     int readingInterval = 0,
+    double humidity = 0,
+    double temperature = 0,
+    double readVoltage = 0,
+    String updatedWhen = '',
     // List<Header> headers,
     // List<ItemData> itemDatas,
     // Topic topic,
@@ -32,8 +40,12 @@ class Device extends Item{
       this.mode = mode ?? '',
       this.localip = localip ?? '',
       this.readingInterval = readingInterval ?? 0,
+      this.humidity = humidity ?? 0,
+      this.temperature = temperature ?? 0,
+      this.readVoltage = readVoltage ?? 0,
       this.id = id ?? '',
-      this.uid = uid ?? ''
+      this.uid = uid ?? '',
+      this.updatedWhen = updatedWhen ?? ''
       // this.headers = headers,
       // this.itemDatas = itemDatas,
       // this.topic = topic
@@ -47,6 +59,10 @@ class Device extends Item{
     String mode,
     String localip,
     int readingInterval,
+    double humidity,
+    double temperature,
+    double readVoltage,
+    String updatedWhen,
     // List<Header> headers,
     // List<ItemData> itemDatas,
     // Topic topic,
@@ -59,6 +75,10 @@ class Device extends Item{
       mode: mode ?? this.mode,
       localip: localip ?? this.localip,
       readingInterval: readingInterval ?? this.readingInterval,
+      humidity: humidity ?? this.humidity,
+      temperature: temperature ?? this.temperature,
+      readVoltage: readVoltage ?? this.readVoltage,
+        updatedWhen: updatedWhen ?? this.updatedWhen,
       // headers: headers ?? this.headers,
       // itemDatas: itemDatas ?? this.itemDatas,
       // topic: topic ?? this.topic,
@@ -67,27 +87,32 @@ class Device extends Item{
 
   @override
   int get hashCode =>
-      id.hashCode ^ uid.hashCode ^ index.hashCode ^ name.hashCode ^ mode.hashCode ^ localip.hashCode ^ readingInterval.hashCode; // ^ topic.hashCode;
+      id.hashCode ^ uid.hashCode ^ index.hashCode ^ name.hashCode ^ mode.hashCode ^ localip.hashCode ^ readingInterval.hashCode ^ humidity.hashCode ^ temperature.hashCode ^ readVoltage.hashCode ^ updatedWhen.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is Device &&
-        runtimeType == other.runtimeType &&
-        id == other.id &&
-        uid == other.uid &&
-        index == other.index &&
-        mode == other.mode &&
-        localip == other.localip &&
-        readingInterval == other.readingInterval &&
-        name == other.name; // &&
+
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          uid == other.uid &&
+          index == other.index &&
+          mode == other.mode &&
+          localip == other.localip &&
+          readingInterval == other.readingInterval &&
+          humidity == other.humidity &&
+          temperature == other.temperature &&
+          readVoltage == other.readVoltage &&
+          updatedWhen == other.updatedWhen &&
+          name == other.name; // &&
         // headers == other.headers &&
         // itemDatas == other.itemDatas &&
         // topic == other.topic;
 
   @override
   String toString() {
-    return 'Device { id: $id, uid: $uid, index: $index, name: $name, mode: $mode, localip: $localip, readingInterval: $readingInterval }'; //, headers: $headers, itemDatas: ${itemDatas}, topic: ${topic} }';
+    return 'Device { id: $id, uid: $uid, index: $index, name: $name, mode: $mode, localip: $localip, readingInterval: $readingInterval, humidity: $humidity, temperature: $temperature, readVoltage: $readVoltage, updatedWhen: $updatedWhen }'; //, headers: $headers, itemDatas: ${itemDatas}, topic: ${topic} }';
   }
 
   ItemEntity toEntity() {
