@@ -6,6 +6,8 @@ import 'package:ftiotsystem/pages/device/model/device.dart';
 import 'package:ftiotsystem/pages/device/view/show_device_page.dart';
 import 'package:ftiotsystem/pages/network/choose_network.dart';
 import 'package:ftiotsystem/utils/constants.dart';
+import 'package:package_info/package_info.dart';
+import 'package:ftiotsystem/globals.dart' as globals;
 
 import 'pages/home/home.dart';
 import 'dart:io' show Platform;
@@ -32,6 +34,20 @@ void main() async {
   //   ),
   // );
 
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  String appName = packageInfo.appName;
+  String packageName = packageInfo.packageName;
+  String version = packageInfo.version;
+  String buildNumber = packageInfo.buildNumber;
+  globals.g_appName = appName;
+  globals.g_packageName = packageName;
+  globals.g_version = version;
+  globals.g_buildNumber = buildNumber;
+
+  print('g_appName=${globals.g_appName}');
+  print('g_packageName=${globals.g_packageName}');
+  print('g_version=${globals.g_version}');
+  print('g_buildNumber=${globals.g_buildNumber}');
 
   runApp(
     Constants(
@@ -53,6 +69,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,

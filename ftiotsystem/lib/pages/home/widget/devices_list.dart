@@ -33,6 +33,8 @@ class _DevicesListState extends State<DevicesList> {
               Map<dynamic, dynamic> values = snapshot.data.snapshot.value;
               values.forEach((key, values) {
                 print('key=${key}');
+                print('temperature=[${values['temperature']}]');
+                print('parseDouble temperature=[${globals.parseDouble(values['temperature'])}]');
                 // lists.add(key);
                 // deviceLists.add(Device.fromEntity(ItemEntity.fromSnapshot(snapshot.data)));
                 deviceLists.add(Device(
@@ -46,8 +48,8 @@ class _DevicesListState extends State<DevicesList> {
                   updatedWhen: values['updatedWhen'] ?? '2021-05-04 19:03:25',
                   readingInterval: values['readingInterval'] ?? 10000,
                   humidity: globals.parseDouble(values['humidity']) ?? 0,
-                  temperature: globals.parseDouble(values['temperature']) ?? 0,
-                  readVoltage: globals.parseDouble(values['readVoltage']) ?? 0,
+                  temperature: globals.parseDouble(values['temperature'] ?? 0),
+                  readVoltage: globals.parseDouble(values['readVoltage'] ?? 0),
                 ));
               });
 
@@ -94,7 +96,8 @@ class _DeviceCardState extends State<DeviceCard> {
     final TextStyle nameStyle = Theme.of(context).textTheme.caption;
     final TextStyle subtitleStyle = Theme.of(context).textTheme.subtitle1;
     final TextStyle numberStyle = Theme.of(context).textTheme.headline3;
-    var numberFormat = NumberFormat('###.0#', 'en_US');
+    var numberFormat = NumberFormat('###.##', 'en_US');
+    var voltageFormat = NumberFormat('###.0#', 'en_US');
     return Bounce(
       duration: Duration(milliseconds: 100),
       onPressed: () {

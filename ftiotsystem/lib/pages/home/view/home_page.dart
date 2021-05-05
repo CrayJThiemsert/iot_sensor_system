@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
+
 import 'package:flutter/material.dart';
-import 'package:ftiotsystem/database.dart';
+
 import 'package:ftiotsystem/pages/home/widget/devices_list.dart';
 import 'package:ftiotsystem/pages/network/choose_network.dart';
-import 'package:ftiotsystem/post.dart';
 
+import 'package:ftiotsystem/globals.dart' as globals;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key, this.app}) : super(key: key);
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page'),
+        title: Text('Home Page - v.${globals.g_version}'),
       ),
       body: Column(
         children: [

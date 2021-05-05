@@ -183,7 +183,8 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
                   Center(
                     child: Container(
                       // child: Text('battery voltage ${weatherHistory?.weatherData?.readVoltage.toStringAsFixed(weatherHistory?.weatherData?.readVoltage.truncateToDouble() == weatherHistory?.weatherData?.readVoltage ? 0 : 2) ?? 'no data'} volts'),
-                      child: Text('battery voltage ${globals.formatNumber(weatherHistory?.weatherData?.readVoltage) ?? 'no data'} volts'),
+                      // child: Text('battery voltage ${globals.formatNumber(weatherHistory?.weatherData?.readVoltage) ?? 'no data'} volts'),
+                      child: Text('battery voltage ${weatherHistory?.weatherData?.readVoltage ?? 'no data'} volts'),
                     ),
                   ),
                   buildReadingIntervalCard(context),

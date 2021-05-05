@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 #version: 1.0.0+1
-version: 1.0.3
+version: 1.0.4
 
 
 environment:
@@ -46,6 +46,7 @@ dependencies:
 
 #  adobe_xd: ^2.0.0+1
   intl: ^0.17.0
+  package_info: ^2.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

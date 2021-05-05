@@ -1,9 +1,16 @@
 library ftiotsystem.globals;
 
+import 'dart:ffi';
+
 String g_internet_ssid = "";
 String g_internet_password = "";
 
 String g_device_name = "";
+
+String g_appName = '';
+String g_packageName = '';
+String g_version = '';
+String g_buildNumber = '';
 
 String formatNumber(double n) {
   return n.toStringAsFixed(n.truncateToDouble() == n ? 0 : 1);
@@ -29,7 +36,9 @@ double parseDouble(dynamic dAmount){
 
     if (strAmount.contains('.')) {
       returnAmount = double.parse(strAmount);
-    }  // Didn't need else since the input was either 0, an integer or a double
+    } else { // Didn't need else since the input was either 0, an integer or a double
+      if (dAmount is int) return dAmount.toDouble();
+    }
   } catch (e) {
     return 0.000;
   }
