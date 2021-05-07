@@ -5,6 +5,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:ftiotsystem/pages/network/entity/scenario_entity.dart';
 import 'package:ftiotsystem/utils/constants.dart';
 import 'package:wifi/wifi.dart';
 
@@ -18,7 +19,14 @@ String _password = '';  // Wifi password
 String _deviceName = '';  // Device name
 
 class ChooseDevicePage extends StatefulWidget {
-  Socket channel;
+  const ChooseDevicePage({
+    Key key,
+    @required this.scenario,
+  }) : super(key: key);
+
+  final Scenario scenario;
+
+  // Socket channel;
 
   @override
   _ChooseDevicePageState createState() => new _ChooseDevicePageState();
@@ -47,20 +55,33 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
     return Scaffold(
       appBar: AppBar(
         // title: Text('${Constants.of(context).DEFAULT_THE_NODE_IP} Internet Wifi Network'),
-        title: Text('Connect Device'),
+        title: Text(getTitle(widget.scenario)),
+        backgroundColor: Colors.cyan[400],
         centerTitle: true,
       ),
       body: SafeArea(
         child: itemSSID(0),
-        // child: ListView.builder(
-        //   padding: EdgeInsets.all(8.0),
-        //   itemCount: theNodeSSIDList.length + 1,
-        //   itemBuilder: (BuildContext context, int index) {
-        //     return itemSSID(index);
-        //   },
-        // ),
       ),
     );
+  }
+
+  String getTitle(Scenario scenario) {
+    switch(scenario.index) {
+      case 1:
+      case 2:
+      case 3: {
+        return 'Connect Device 5/5';
+      }
+      break;
+      case 4: {
+        return 'Connect Device 4/4';
+      }
+      break;
+      default: {
+        return 'Connect Device 5/5';
+      }
+      break;
+    }
   }
 
   Widget itemSSID(index) {
@@ -68,32 +89,6 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
     if (index == 0) {
       return Column(
         children: [
-          // Row(
-          //   children: <Widget>[
-          //     ElevatedButton(
-          //       child: Text('ssid'),
-          //       onPressed: _getWifiName,
-          //     ),
-          //     Offstage(
-          //       offstage: level == 0,
-          //       child: Image.asset(level == 0 ? 'images/wifi1.png' : 'images/wifi$level.png', width: 28, height: 21),
-          //     ),
-          //     Text(_wifiName,
-          //       textAlign: TextAlign.left,
-          //     ),
-          //   ],
-          // ),
-          // Row(
-          //   children: <Widget>[
-          //     ElevatedButton(
-          //       child: Text('ip'),
-          //       onPressed: _getIP,
-          //     ),
-          //     Text(_ip,
-          //       textAlign: TextAlign.left,
-          //     ),
-          //   ],
-          // ),
           TextField(
             decoration: InputDecoration(
               border: UnderlineInputBorder(),
@@ -132,31 +127,29 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
               globals.g_device_name = _deviceName;
             },
           ),
-          // TextField(
-          //   decoration: InputDecoration(
-          //     border: UnderlineInputBorder(),
-          //     filled: true,
-          //     icon: Icon(Icons.lock_outline),
-          //     hintText: 'Your wifi password',
-          //     labelText: 'password',
-          //   ),
-          //   keyboardType: TextInputType.text,
-          //   controller: _passwordController,
-          //   onChanged: (value) {
-          //     password = value;
-          //     _password = password;
-          //     globals.g_internet_password = _password;
-          //   },
-          // ),
           ElevatedButton(
             child: Text('Choose a device...'),
+            style: ElevatedButton.styleFrom(
+              primary: Colors.cyan[400],
+              // padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+              // textStyle: TextStyle(
+              //     fontSize: 30,
+              //     fontWeight: FontWeight.bold)
+            ),
             onPressed: () {
               AppSettings.openWIFISettings(asAnotherTask: true).then((value) => scanMatchedTheNode() );
             },
             // onPressed: executeEsptouch, // too complicated to use, because we don't know how to verify/handle response.
           ),
           ElevatedButton(
-            child: Text('connect'),
+            child: Text('Connect'),
+            style: ElevatedButton.styleFrom(
+              primary: Colors.cyan[400],
+              // padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+              // textStyle: TextStyle(
+              //     fontSize: 30,
+              //     fontWeight: FontWeight.bold)
+            ),
             onPressed: gotoHomePage,
             // onPressed: executeEsptouch, // too complicated to use, because we don't know how to verify/handle response.
           ),
@@ -187,22 +180,8 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
     }
   }
 
-  void _togglePower() {
-    print("call _togglePower...");
-    // widget.channel.write("POWER\n");
-  }
-
-  void _fan() {
-    widget.channel.write("FAN\n");
-  }
-
-  void _mode() {
-    widget.channel.write("MODE\n");
-  }
-
   @override
   void dispose() {
-    // widget.channel.close();
     super.dispose();
     _ssidController.dispose();
     _deviceNameController.dispose();
@@ -261,15 +240,7 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
   }
 
   void doneHandler(){
-    widget.channel.destroy();
-  }
-
-  void gotoNextPage() {
-    // Navigate to add new device page
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ChooseDevicePage()),
-    );
+    // widget.channel.destroy();
   }
 
   void gotoDeviceDetailPage() {

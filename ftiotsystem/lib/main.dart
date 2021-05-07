@@ -85,6 +85,7 @@ class _MyAppState extends State<MyApp> {
 
           subtitle1: TextStyle(fontFamily: 'Kanit', fontSize: 12.0, fontWeight: FontWeight.w300, color: Colors.grey.withOpacity(0.6),),
           subtitle2: TextStyle(fontFamily: 'Kanit', fontSize: 12.0, fontWeight: FontWeight.w600, color: Colors.lightGreen,),
+          bodyText1: TextStyle(fontFamily: 'Kanit', fontSize: 14.0, fontWeight: FontWeight.w300, color: Colors.grey.withOpacity(0.9),),
 
           headline1: TextStyle(fontFamily: 'Kanit', fontSize: 36.0, fontWeight: FontWeight.w300, color: Colors.white,),
           headline2: TextStyle(fontFamily: 'Kanit', fontSize: 12.0, fontWeight: FontWeight.w300, color: Colors.white,),

@@ -9,6 +9,7 @@ import 'package:ftiotsystem/pages/home/widget/devices_list.dart';
 import 'package:ftiotsystem/pages/network/choose_network.dart';
 
 import 'package:ftiotsystem/globals.dart' as globals;
+import 'package:ftiotsystem/pages/network/choose_territory_scenario.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key, this.app}) : super(key: key);
@@ -84,17 +85,26 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Home Page - v.${globals.g_version}'),
+        backgroundColor: Colors.cyan[400],
       ),
       body: Column(
         children: [
           Center(
             child: ElevatedButton(
               child: Text('Add New Device'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.cyan[400],
+                // padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                // textStyle: TextStyle(
+                //     fontSize: 30,
+                //     fontWeight: FontWeight.bold)
+              ),
               onPressed: () {
                 // Navigate to add new device page
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ChooseNetworkPage()),
+                    // MaterialPageRoute(builder: (context) => ChooseNetworkPage()),
+                  MaterialPageRoute(builder: (context) => ChooseTerritoryScenarioPage()),
                 );
               },
             ),

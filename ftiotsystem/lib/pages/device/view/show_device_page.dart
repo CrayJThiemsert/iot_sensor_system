@@ -87,6 +87,7 @@ class _ShowDevicePageState extends State<ShowDevicePage> with AfterLayoutMixin<S
             return Scaffold(
               appBar: AppBar(
                 title: Text('${device.name ?? device.uid} Detail'),
+                backgroundColor: Colors.cyan[400],
               ),
               body: Column(
                 children: [

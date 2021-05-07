@@ -157,7 +157,7 @@ class _DeviceCardState extends State<DeviceCard> {
                           topRight: Radius.circular(10.0),
                           bottomRight: Radius.circular(10.0),
                         ),
-                        color: const Color(0xff070707),
+                        color: Colors.grey[800],
                         // border: Border.all(
                         //     width: 1.0, color: const Color(0xff707070)),
                       ),
