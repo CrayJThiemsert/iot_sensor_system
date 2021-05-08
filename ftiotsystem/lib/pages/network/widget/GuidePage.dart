@@ -50,10 +50,13 @@ class _GuidePageState extends State<GuidePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 // mainAxisSize: MainAxisSize.max,
                 children: [
-                  GifImage(
-                    controller: widget.gifController,
+                  Image(
                     image: AssetImage(scenario.iconImage),
                   ),
+                  // GifImage(
+                  //   controller: widget.gifController,
+                  //   image: AssetImage(scenario.iconImage),
+                  // ),
                   Text('${scenario.caption}',
                     style: nameStyle,
                   ),

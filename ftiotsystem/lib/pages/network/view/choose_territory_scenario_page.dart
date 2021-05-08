@@ -69,9 +69,9 @@ class _ChooseTerritoryScenarioPageState extends State<ChooseTerritoryScenarioPag
       children: [
         Text('Please choose a network scenario', textAlign: TextAlign.center, style: captionStyle,),
         SizedBox(height: 40,),
-        ScenarioCard(scenario: Scenario(caption: 'Read sensor values from anywhere', description: 'require internet network', guide: 'for user who plan to setup each sensors in internet access territory.', iconImage: 'images/worldspin.gif', index: 1)),
-        ScenarioCard(scenario: Scenario(caption: 'Read sensor values in user territory', description: 'non internet access but have WIFI router network', guide: 'for user who plan to setup each sensors in non internet access territory. But still have WIFI router network.', iconImage: 'images/worldspin.gif', index: 2)),
-        ScenarioCard(scenario: Scenario(caption: 'Read sensor values from device directly', description: 'non internet access and non WIFI router network', guide: 'for user who plan to setup each sensors in non internet access territory. But have no WIFI router network.', iconImage: 'images/worldspin.gif', index: 3)),
+        ScenarioCard(scenario: Scenario(caption: 'Read sensor values from anywhere', description: 'require internet network', guide: 'for user who plan to setup each sensors in internet access territory.', iconImage: 'images/diagram_anywhere.png', index: 1)),
+        ScenarioCard(scenario: Scenario(caption: 'Read sensor values in user territory', description: 'non internet access but have WIFI router network', guide: 'for user who plan to setup each sensors in non internet access territory. But still have WIFI router network.', iconImage: 'images/diagram_territory.png', index: 2)),
+        ScenarioCard(scenario: Scenario(caption: 'Read sensor values from device directly', description: 'non internet access and non WIFI router network', guide: 'for user who plan to setup each sensors in non internet access territory. But have no WIFI router network.', iconImage: 'images/diagram_directly.png', index: 3)),
       ],
     );
   }
