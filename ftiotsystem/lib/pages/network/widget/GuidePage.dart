@@ -107,7 +107,8 @@ class _GuidePageState extends State<GuidePage> {
       case 3: {
         return GuideChooseDevicePage(scenario: widget.scenario);
       }
-      case 4: {
+      case 4:
+      case 5:{
         return ChooseDevicePage(scenario: widget.scenario);
       }
       break;

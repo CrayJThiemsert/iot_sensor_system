@@ -69,11 +69,12 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
     switch(scenario.index) {
       case 1:
       case 2:
-      case 3: {
+      case 3:
+      case 4:{
         return 'Connect Device 5/5';
       }
       break;
-      case 4: {
+      case 5: {
         return 'Connect Device 4/4';
       }
       break;
@@ -182,10 +183,10 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
 
   @override
   void dispose() {
-    super.dispose();
     _ssidController.dispose();
     _deviceNameController.dispose();
     _passwordController.dispose();
+    super.dispose();
   }
 
   void loadData() async {

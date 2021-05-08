@@ -58,7 +58,7 @@ class _GuideChooseDevicePageState extends State<GuideChooseDevicePage> with Afte
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            GuidePage(scenario: Scenario(caption: 'Choose A Device', description: 'select a device that you want to connect.', guide: 'Please turn on the device. You suppose to see \"theNode_DHT\" in the current network list.\n\nThe tap it and go back to the next page.', iconImage: 'images/worldspin.gif', index: 4), gifController: gifController),
+            GuidePage(scenario: Scenario(caption: 'Choose A Device', description: 'select a device that you want to connect.', guide: 'Please turn on the device. You suppose to see \"theNode_DHT\" in the current network list.\n\nThe tap it and go back to the next page.', iconImage: 'images/choose_device.jpg', index: getIndex(widget.scenario)), gifController: gifController),
           ],
         ),
       ),
@@ -84,6 +84,27 @@ class _GuideChooseDevicePageState extends State<GuideChooseDevicePage> with Afte
       break;
       default: {
         return 'Connect Device 3/5';
+      }
+      break;
+    }
+  }
+
+  int getIndex(Scenario scenario) {
+    switch(scenario.index) {
+      case 1: {
+        return 4;
+      }
+      break;
+      case 2: {
+        return 4;
+      }
+      break;
+      case 3: {
+        return 5;
+      }
+      break;
+      default: {
+        return scenario.index;
       }
       break;
     }
