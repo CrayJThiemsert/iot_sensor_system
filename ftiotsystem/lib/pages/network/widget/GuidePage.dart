@@ -21,6 +21,7 @@ class GuidePage extends StatefulWidget {
 }
 
 class _GuidePageState extends State<GuidePage> {
+
   @override
   Widget build(BuildContext context) {
     return drawGuide(widget.scenario);
@@ -82,16 +83,31 @@ class _GuidePageState extends State<GuidePage> {
             //     fontSize: 30,
             //     fontWeight: FontWeight.bold)
           ),
-          onPressed: () {
-            // Navigate to add new device page
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => gotoNextPage(scenario)),
-            );
-          },
+          onPressed:
+            enableButton(widget.scenario) ? ()=> {
+              // Navigate to add new device page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => gotoNextPage(scenario)),
+              )
+            } : null,
+
         ),
       ],
     );
+  }
+
+  bool enableButton(Scenario scenario) {
+    bool isEnabled = true ;
+    switch(scenario.index) {
+      case 2:
+      case 3:{
+        isEnabled = false;
+      }
+      break;
+    }
+
+    return isEnabled;
   }
 
   Widget gotoNextPage(Scenario scenario) {
