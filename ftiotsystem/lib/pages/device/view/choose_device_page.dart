@@ -66,15 +66,14 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
   }
 
   String getTitle(Scenario scenario) {
+    print('scenario.index=${scenario.index}');
     switch(scenario.index) {
-      case 1:
-      case 2:
-      case 3:
-      case 4:{
+      case 11:
+      case 22: {
         return 'Connect Device 5/5';
       }
       break;
-      case 5: {
+      case 33: {
         return 'Connect Device 4/4';
       }
       break;
@@ -82,6 +81,26 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
         return 'Connect Device 5/5';
       }
       break;
+    }
+  }
+
+  int getScenarioIndex(Scenario scenario) {
+    switch(scenario.index) {
+      case 11: {
+        return 1;
+      }
+      break;
+      case 22: {
+        return 2;
+      }
+      break;
+      case 33: {
+        return 3;
+      }
+      break;
+      default: {
+        return 1;
+      }
     }
   }
 
@@ -261,7 +280,14 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
     String mode = "setup";
     var url =
     // Uri.https('www.googleapis.com', '/books/v1/volumes', {'q': '{http}'});
-    Uri.http(Constants.of(context).DEFAULT_THE_NODE_IP, '/setting', {'ssid': globals.g_internet_ssid, 'pass': globals.g_internet_password, 'mode': mode, 'name': globals.g_device_name});
+    Uri.http(Constants.of(context).DEFAULT_THE_NODE_IP, '/setting', {
+      'ssid': globals.g_internet_ssid,
+      'pass': globals.g_internet_password,
+      'mode': mode,
+      'name': globals.g_device_name,
+      'scenario': getScenarioIndex(widget.scenario),
+      'mobileserver': globals.g_mobileServer // '192.168.1.106' S7 Edge
+    });
 
     // Await the http get response, then decode the json-formatted response.
     final response = await http.get(url);

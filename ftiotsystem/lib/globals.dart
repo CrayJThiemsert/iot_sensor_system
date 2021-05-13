@@ -11,6 +11,7 @@ String g_appName = '';
 String g_packageName = '';
 String g_version = '';
 String g_buildNumber = '';
+String g_mobileServer = '';
 
 String formatNumber(double n) {
   return n.toStringAsFixed(n.truncateToDouble() == n ? 0 : 1);

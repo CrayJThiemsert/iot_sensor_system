@@ -5,6 +5,7 @@ import 'package:ftiotsystem/pages/network/choose_network.dart';
 import 'package:ftiotsystem/pages/network/entity/scenario_entity.dart';
 import 'package:ftiotsystem/pages/network/view/guide_choose_device_page.dart';
 import 'package:ftiotsystem/utils/sizes_helpers.dart';
+import 'package:ftiotsystem/globals.dart' as globals;
 
 class GuidePage extends StatefulWidget {
   const GuidePage({
@@ -58,7 +59,7 @@ class _GuidePageState extends State<GuidePage> {
                   //   controller: widget.gifController,
                   //   image: AssetImage(scenario.iconImage),
                   // ),
-                  Text('${scenario.caption}',
+                  Text('${scenario.caption} - ${globals.g_mobileServer}',
                     style: nameStyle,
                   ),
                   Text('${scenario.description}',
@@ -99,13 +100,13 @@ class _GuidePageState extends State<GuidePage> {
 
   bool enableButton(Scenario scenario) {
     bool isEnabled = true ;
-    switch(scenario.index) {
-      case 2:
-      case 3:{
-        isEnabled = false;
-      }
-      break;
-    }
+    // switch(scenario.index) {
+    //   case 2:
+    //   case 3:{
+    //     isEnabled = false;
+    //   }
+    //   break;
+    // }
 
     return isEnabled;
   }
@@ -123,8 +124,9 @@ class _GuidePageState extends State<GuidePage> {
       case 3: {
         return GuideChooseDevicePage(scenario: widget.scenario);
       }
-      case 4:
-      case 5:{
+      case 11:
+      case 22:
+      case 33:{
         return ChooseDevicePage(scenario: widget.scenario);
       }
       break;
