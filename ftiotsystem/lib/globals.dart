@@ -6,6 +6,7 @@ String g_internet_ssid = "";
 String g_internet_password = "";
 
 String g_device_name = "";
+String g_user_uid = "cray"; // test user uid, it will use to create root node in firebase real time database
 
 String g_appName = '';
 String g_packageName = '';

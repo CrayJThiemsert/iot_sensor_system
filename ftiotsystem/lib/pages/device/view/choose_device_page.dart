@@ -84,22 +84,22 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
     }
   }
 
-  int getScenarioIndex(Scenario scenario) {
+  String getScenarioIndex(Scenario scenario) {
     switch(scenario.index) {
       case 11: {
-        return 1;
+        return '1';
       }
       break;
       case 22: {
-        return 2;
+        return '2';
       }
       break;
       case 33: {
-        return 3;
+        return '3';
       }
       break;
       default: {
-        return 1;
+        return '1';
       }
     }
   }
@@ -285,8 +285,9 @@ class _ChooseDevicePageState extends State<ChooseDevicePage> with AfterLayoutMix
       'pass': globals.g_internet_password,
       'mode': mode,
       'name': globals.g_device_name,
-      'scenario': getScenarioIndex(widget.scenario),
-      'mobileserver': globals.g_mobileServer // '192.168.1.106' S7 Edge
+      'useruid': globals.g_user_uid, // size 80 characters
+      'scenario': getScenarioIndex(widget.scenario), // size 1 character
+      'mobileserver': globals.g_mobileServer // '192.168.1.106' S7 Edge = size 15 characters
     });
 
     // Await the http get response, then decode the json-formatted response.

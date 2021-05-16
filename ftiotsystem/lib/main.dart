@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:ftiotsystem/pages/device/choose_device.dart';
 import 'package:ftiotsystem/pages/device/model/device.dart';
 import 'package:ftiotsystem/pages/device/view/show_device_page.dart';
+import 'package:ftiotsystem/pages/network/IotServerService.dart';
 import 'package:ftiotsystem/pages/network/choose_network.dart';
 import 'package:ftiotsystem/utils/constants.dart';
 import 'package:package_info/package_info.dart';
 import 'package:ftiotsystem/globals.dart' as globals;
 
 import 'pages/home/home.dart';
-import 'dart:io' show Platform;
+// import 'dart:io' show Platform;
+
+import 'package:shelf/shelf_io.dart' as shelf_io;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +51,13 @@ void main() async {
   print('g_packageName=${globals.g_packageName}');
   print('g_version=${globals.g_version}');
   print('g_buildNumber=${globals.g_buildNumber}');
+
+  final service = IotServerService();
+  // final server = await shelf_io.serve(service.handler, 'localhost', 8080);
+  // final server = await shelf_io.serve(service.handler, '192.168.1.106', 8080); // Still fixed ip address, have to change to dynamic ip depend on mobile app device.
+  final server = await shelf_io.serve(service.handler, '192.168.1.106', 9090); // Still fixed ip address, have to change to dynamic ip depend on mobile app device.
+  print('Serving at http://${server.address.host}:${server.port}');
+  print('Server running on localhost:${server.port}');
 
   runApp(
     Constants(
